@@ -17,12 +17,15 @@
     </header>
     <main>
       <template id="list-item">
-        <li>
-          <div class="page-note" id="backdrop"><input type="checkbox" id="checkbox"></input>
-            <span class="note"></span>
-            <button type="button" id="remove-list-item">❌</button>
-          </div>
-        </li>
+        <div class="page-note" id="backdrop">
+          <ul id="list">
+            <li>
+              <input type="checkbox" id="checkbox"></input>
+              <span class="note"></span>
+              <button type="button" id="remove-list-item">❌</button>
+            </li>
+          </ul>
+        </div>
       </template>
 
       <form action="submit">
