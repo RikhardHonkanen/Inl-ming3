@@ -4,16 +4,19 @@ const form = document.querySelector('form');
 const formText = document.getElementById('searchbar');
 const counter = document.getElementById('items-left');
 
-// pushtest
-
+function editNote() {
+    alert("alert");
+}
 
 form.onsubmit = event => {
-    event.preventDefault();
+    event.preventDefault();    
 
     const note = noteTemplate.content.firstElementChild.cloneNode(true);
-    const noteText = formText.value;
 
+    const noteText = formText.value;
     note.querySelector('span').textContent = noteText;
+
+    note.addEventListener('dblclick', editNote());
 
     const deleteButton = note.querySelector('button');
     deleteButton.onclick = event => {
@@ -39,3 +42,11 @@ function updateCounter() {
         counter.textContent = count + 'items left';
     }
 }
+
+
+// const span = document.getElementById("todo");
+
+// span.addEventListener("ondblclick", EditText);
+// function EditText() {
+//     alert("hej");
+// }
