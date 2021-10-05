@@ -27,33 +27,49 @@ header h1 {
 }
 
 main {
-    display: block;
+    display:block;
     margin: 0 auto;
 }
 
 #searchbar {
-    display:block;
+    display: inline-block;
     margin: 0 auto;
-    height: 80px;
-    width: 650px;
+    padding: 15px;
+    width: 550px;
     font-size: 24px;
-    border: none;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.445);
+    border: transparent;
+}
+
+.left-frame {
+  display: inline-block;
+  /* margin-left: 50px;
+  height: auto;
+  background-color: white;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.445); */
+}
+
+#trigger-all {
+  background-color: white;
+  color: white;
+}
+
+
+
+#searchbar:focus {
+  outline : none;
+  background-color: white;
 }
 
 #searchbar::placeholder {
-    text-align: center;
     font-size: 24px;
     font-style: italic;
-    margin-left: 250px;
     color: rgba(128, 128, 128, 0.575);
-    
 }
 
 .page-note {
     background-color: white;
     margin: 0 auto;
-    width: 650px;
+    width: 550px;
     border-top: 1px solid rgba(128, 128, 128, 0.445);
 }
 
@@ -71,6 +87,11 @@ main {
     margin-top: -20px;
     list-style: none;
 }
+
+/* input[type="checkbox"]:checked + input {
+    text-decoration: line-through;
+    color: #d9d9d9;
+} */
 
 input[type="checkbox"]:checked + span {
     text-decoration: line-through;
@@ -138,3 +159,11 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
+
+.editnote{
+  width: 650px;
+  height: auto;
+  border: transparent;
+  border-top: 1px solid grey;
+}
+

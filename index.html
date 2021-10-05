@@ -17,29 +17,40 @@
     </header>
     <main>
       <template id="list-item">
-        <div class="page-note" id="backdrop">
-          <ul id="list">
-            <li>
-              <input type="checkbox" id="checkbox"></input>
-              <span class="note" id="todo"></span>
-              <button type="button" id="remove-list-item">❌</button>
-            </li>
-          </ul>
-        </div>
+        <aside class="left-frame">
+          <input type="checkbox" id="checkbox"></input>  
+          <div class="page-note" id="backdrop">
+            <div class="left-frame">
+              <ul id="list">
+                <li>            
+                  <span class="note" id="todo"></span>
+                  <button type="button" id="remove-list-item">❌</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </aside>
       </template>
 
-      <form action="submit">
-        <input type="text" placeholder="What needs to be done?" id="searchbar"></input>
-        <ol class="notes" id="notes-list"></ol>
-        <aside class="footer">
+      <!-- <aside class="left-frame"> -->
+        <div class="left-frame">
+          <form action="submit">
+            <button type="button" id="trigger-all">🔽</button>
+            <input type="text" placeholder="What needs to be done?" id="searchbar"></input>
+          </form>
+        </div>
+      <!-- </aside> -->
+      <ol class="notes" id="notes-list"></ol>
+         <aside class="footer">
           <span id="items-left"></span>
-          <!-- <div class="filters">
+          <div class="filters">
                 <button>All</button>
                     <button>Active</button>
                     <button>Completed</button>
-                </div> -->
+                </div>
         </aside>
-      </form>
+        
+      
     </main>
     <footer>
       <p>Double-click to edit a todo</p>

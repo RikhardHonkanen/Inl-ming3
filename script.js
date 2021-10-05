@@ -4,20 +4,14 @@ const form = document.querySelector('form');
 const formText = document.getElementById('searchbar');
 const counter = document.getElementById('items-left');
 
-function editNote() {
-    alert("alert");
-}
-
 form.onsubmit = event => {
     event.preventDefault();    
 
     const note = noteTemplate.content.firstElementChild.cloneNode(true);
 
-    const noteText = formText.value;
+    let noteText = formText.value;
     note.querySelector('span').textContent = noteText;
-
-    note.addEventListener('dblclick', editNote());
-
+    
     const deleteButton = note.querySelector('button');
     deleteButton.onclick = event => {
         note.remove();
@@ -26,7 +20,30 @@ form.onsubmit = event => {
     
     notesList.append(note);
     formText.value = '';
+    
+    note.addEventListener('dblclick', function editNote() {
+        noteText = note.querySelector('span').textContent;
+        note.replaceChildren();
 
+        let editTextBox = document.createElement("input");
+        editTextBox.setAttribute('type', 'text');
+        editTextBox.value = noteText;
+        note.appendChild(editTextBox);
+        editTextBox.focus();
+
+        editTextBox.onblur = function restoreNote() {
+            const newNote = noteTemplate.content.firstElementChild.cloneNode(true);
+            newNote.querySelector('span').textContent = editTextBox.value;
+
+            const deleteButton = newNote.querySelector('button');
+            deleteButton.onclick = event => {
+                newNote.remove();
+                updateCounter();
+            }
+
+            note.replaceChildren(newNote);
+        }
+    });
     updateCounter();
 }
 
@@ -42,11 +59,3 @@ function updateCounter() {
         counter.textContent = count + 'items left';
     }
 }
-
-
-// const span = document.getElementById("todo");
-
-// span.addEventListener("ondblclick", EditText);
-// function EditText() {
-//     alert("hej");
-// }
