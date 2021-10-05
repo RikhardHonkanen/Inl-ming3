@@ -4,6 +4,8 @@ const form = document.querySelector('form');
 const formText = document.getElementById('searchbar');
 const counter = document.getElementById('items-left');
 
+// push
+
 
 form.onsubmit = event => {
     event.preventDefault();
