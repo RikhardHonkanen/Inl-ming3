@@ -8,39 +8,39 @@
   <title>Backbone.js • TodoMVC</title>
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
-</head>
-
+</head> 
+      
 <body>
-  <div class="wrapper">
     <header>
       <h1>todos</h1>
     </header>
+    
+    <!-- Searchbar window -->
     <main>
-      <template id="list-item">
-        <aside class="left-frame">
-          <input type="checkbox" id="checkbox"></input>  
-          <div class="page-note" id="backdrop">
-            <div class="left-frame">
-              <ul id="list">
-                <li>            
-                  <span class="note" id="todo"></span>
-                  <button type="button" id="remove-list-item">❌</button>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </aside>
-      </template>
-
-      <!-- <aside class="left-frame"> -->
-        <div class="left-frame">
-          <form action="submit">
-            <button type="button" id="trigger-all">🔽</button>
-            <input type="text" placeholder="What needs to be done?" id="searchbar"></input>
-          </form>
+        <form>
+          <div class="parent">
+            <div class="left-frame"><button type="button" id="button">🔽</button></div>
+            <input type="text" class="searchbar" placeholder="What needs to be done?">
         </div>
-      <!-- </aside> -->
-      <ol class="notes" id="notes-list"></ol>
+        </form>
+    </main>
+    <!-- End of searchbar window -->
+    
+    
+
+    <template id="list-item">
+      <div class="parent">
+        <button type="button" id="remove-list-item">❌</button> 
+          <div class="left-frame">
+            <label class="container"><input type="checkbox"></input><span id="checkbox"></span></label>
+          </div> 
+          <span class="note" id="todo"></span>
+      </div> <!--  closes "parent div" -->
+    </template>
+    
+    <span id="items-left">Where dis?</span>
+      
+      <!--
          <aside class="footer">
           <span id="items-left"></span>
           <div class="filters">
@@ -48,16 +48,16 @@
                     <button>Active</button>
                     <button>Completed</button>
                 </div>
-        </aside>
+        </aside> -->
         
       
-    </main>
+    
     <footer>
       <p>Double-click to edit a todo</p>
       <p>Written by <a href="https://github.com/addyosmani">Addy Osmani</a></p>
       <p>Part of <a href="https://todomvc.com/">TodoMVC</a></p>
     </footer>
-  </div>
+ 
 </body>
 
 </html>

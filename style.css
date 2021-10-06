@@ -5,17 +5,12 @@
 }
 
 body {
-    font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #f5f5f5;
-}
-
-.wrapper {
     display: block;
     margin: 0 auto;
     margin-top: 50px;
-    background-color: rgba(0, 0, 255, 0.329);
     width: 700px;
-    height: auto;
+    font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #f5f5f5;
 }
 
 
@@ -27,44 +22,185 @@ header h1 {
 }
 
 main {
-    display:block;
-    margin: 0 auto;
+    width: 600px;
+    margin-left: 70px;
+    background-color: white;
+    /* border: 1px solid red; */
 }
 
-#searchbar {
-    display: inline-block;
-    margin: 0 auto;
-    padding: 15px;
-    width: 550px;
-    font-size: 24px;
-    border: transparent;
+.parent {
+    display: flex;
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 30%), 0 25px 50px 0 rgb(0 0 0 / 10%);
 }
 
 .left-frame {
-  display: inline-block;
-  /* margin-left: 50px;
-  height: auto;
-  background-color: white;
-  border-bottom: 1px solid rgba(128, 128, 128, 0.445); */
+    padding: 10px;
 }
 
-#trigger-all {
-  background-color: white;
-  color: white;
+.searchbar {
+    flex: 1;
+    border: none;
+    border-color: none;
+    background-color: white;
+    font-size: 24px;
 }
 
-
-
-#searchbar:focus {
-  outline : none;
-  background-color: white;
+.searchbar {
+    /* border: 1px solid blue; */
 }
 
-#searchbar::placeholder {
+.searchbar::placeholder {
     font-size: 24px;
     font-style: italic;
-    color: rgba(128, 128, 128, 0.575);
+    color: rgba(128, 128, 128, 0.459);
 }
+
+.searchbar:focus{
+    outline : none;
+    background-color: white;
+}
+
+/* Cross-button */
+#button {
+    font-size: 30px;
+    border: none;
+    background-color: white;
+    margin-right: 7px;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+/* Note element below */
+.parent {
+    background-color: white;
+    width: inherit;
+    /* border: 1px solid rgba(128, 128, 128, 0.445); */
+    position: relative;
+    z-index: 1;
+    /* background-color: red; */
+    
+}
+
+/* "searchbar" in above  */
+.note {
+    flex: 1;
+    align-self: center;
+    margin-left: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 2px;
+    word-break: break-all;
+    /* border: none;
+    border-color: none; */
+    background-color: white;
+    font-size: 24px;
+}
+
+#remove-list-item {
+    position: absolute;
+    inset: 0 0 0 550px;
+    width: 30px;
+    height: 30px;
+    margin: auto 0;
+    visibility: hidden;
+    border: none;
+    background-color: transparent; 
+    opacity: 50%; 
+    font-size: 15px;
+    margin-bottom: 9px;
+}
+
+.parent:hover > #remove-list-item{
+    visibility: visible;
+}
+
+input[type="checkbox"]:checked ~ #note {
+    text-decoration: line-through;
+    color: #d9d9d9;
+}
+
+footer {
+    text-align: center;
+    color: #bfbfbf;
+    margin-top: 50px;
+    line-height: 30px;
+    font-size: 12px;
+}
+
+footer a {
+    text-decoration: none;
+    color: #bfbfbf;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+
+.container {
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-align: center;
+  }
+  
+  /* Hide the browser's default checkbox */
+  
+  .container input {
+    position: absolute;
+    opacity: 0;
+  }
+  
+  /* Create the checkmark/indicator (hidden when not checked) */
+  #checkbox:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the checkmark when checked */
+  .container input:checked~#checkbox:after {
+    display: block;
+  }
+  
+  /* Style the checkmark/indicator */
+  /* Creates a backwards L-shape. Rotate rotates the shape to a checkmark */
+  .container #checkbox:after {
+    left: 7px;
+    top: 4px;
+    width: 6px;
+    height: 10px;
+    border: solid green;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+  
+  /* Create a custom checkbox */
+  #checkbox {
+    position: absolute;
+    top: 2px;
+    left: 8px;
+    height: 25px;
+    width: 25px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+  }
+
+  
+/* 
+
 
 .page-note {
     background-color: white;
@@ -88,19 +224,11 @@ main {
     list-style: none;
 }
 
-/* input[type="checkbox"]:checked + input {
-    text-decoration: line-through;
-    color: #d9d9d9;
-} */
 
-input[type="checkbox"]:checked + span {
-    text-decoration: line-through;
-    color: #d9d9d9;
-}
 
 
 input[type="text"] {
-    /* text-align:center; */
+    text-align:center;
     font-size: 24px;
     font-style: italic;
     margin-left: 350px;
@@ -131,39 +259,13 @@ input[type="text"] {
 }
 
 
-/* ul > li {
-    margin: 0 15px 0 15px;
-    display: inline;
-} */
-
-/* .filters li:hover {
-    border: 1px solid red;
-    border-radius: 10%;
-} */
 
 
-
-footer {
-    text-align: center;
-    color: #bfbfbf;
-    margin-top: 50px;
-    line-height: 30px;
-    font-size: 12px;
-}
-
-footer a {
-    text-decoration: none;
-    color: #bfbfbf;
-}
-
-footer a:hover {
-    text-decoration: underline;
-}
 
 .editnote{
   width: 650px;
   height: auto;
   border: transparent;
   border-top: 1px solid grey;
-}
+} */
 
