@@ -3,84 +3,103 @@ var Note = /** @class */ (function () {
     }
     return Note;
 }());
-var noteTemplate = document.querySelector('#list-item');
-var notesList = document.querySelector('main');
-var form = document.querySelector('form');
-var formText = document.querySelector('input');
-var counter = document.getElementById('items-left');
+var noteTemplate = document.querySelector("#list-item");
+var notesList = document.querySelector("main");
+var form = document.querySelector("form");
+var formText = document.querySelector("input");
+var counter = document.getElementById("items-left");
 var notes = [];
 var noteIndex = 0;
+var editTextBox = document.createElement("input");
+var noteText = formText.value;
+var note = noteTemplate.content.firstElementChild.cloneNode(true);
 form.onsubmit = function (event) {
     event.preventDefault();
-    noteIndex++;
     var noteText = formText.value;
-    var noteObject = new Note();
-    noteObject.text = noteText;
-    noteObject.done = false;
-    noteObject.index = noteIndex;
-    notes.push(noteObject);
-    createNote(noteText, noteIndex);
+    if (noteText === "") {
+    }
+    else {
+        var noteObject = new Note();
+        noteObject.text = noteText;
+        noteObject.done = false;
+        noteObject.index = noteIndex;
+        notes.push(noteObject);
+        createNote(noteText, noteIndex);
+        noteIndex++;
+        updateCounter();
+    }
 };
 function createNote(noteText, noteIndex) {
     var note = noteTemplate.content.firstElementChild.cloneNode(true);
-    note.querySelector('#todo').textContent = noteText;
-    note.setAttribute('id', noteIndex.toString());
-    var deleteButton = note.querySelector('button');
+    note.querySelector("#todo").textContent = noteText;
+    note.setAttribute("id", noteIndex.toString());
+    var deleteButton = note.querySelector("button");
     deleteButton.onclick = function (event) {
-        var toRemove = notes.findIndex(function (i) { return i.index == parseInt(note.getAttribute('id')); });
+        var toRemove = notes.findIndex(function (i) { return i.index == parseInt(note.getAttribute("id")); });
         notes.splice(toRemove, 1);
         note.remove();
         updateCounter();
     };
+    var checkAllButton = document.querySelector("#button");
+    checkAllButton.addEventListener("click", TrueCheckBoxes);
+    function TrueCheckBoxes() {
+        var checkBox = note.querySelector("#boxcheck");
+        checkBox.checked = !checkBox.checked;
+        // for (let i = 0; i < notes.length; i++) {
+        //   if (checkBox[i].checked === false) {
+        //     checkBox[i].checked = true;
+        //     }
+        // }
+    }
     notesList.append(note);
-    formText.value = '';
-    note.addEventListener('dblclick', function editNote() {
-        noteText = note.querySelector('#todo').textContent;
+    formText.value = "";
+    note.addEventListener("dblclick", editNote);
+    function editNote() {
+        noteText = note.querySelector("#todo").textContent;
         note.replaceChildren();
-        var editForm = document.createElement('form');
-        editForm.setAttribute('class', 'parent');
-        var div = document.createElement('div');
-        div.setAttribute('class', 'left-frame');
-        var spacerBox = document.createElement('input');
-        spacerBox.setAttribute('type', 'checkbox');
-        spacerBox.setAttribute('id', 'checkbox');
-        spacerBox.setAttribute('style', 'opacity: 0');
-        var editTextBox = document.createElement('input');
-        editTextBox.setAttribute('type', 'text');
-        editTextBox.setAttribute('class', 'note');
+        var editForm = document.createElement("form");
+        editForm.setAttribute("class", "parent");
+        var div = document.createElement("div");
+        div.setAttribute("class", "left-frame");
+        // let spacerBox = document.createElement("input");
+        // spacerBox.setAttribute("type", "checkbox");
+        // spacerBox.setAttribute("id", "falsebox");
+        // spacerBox.setAttribute("style", "opacity: 0");
+        editTextBox.setAttribute("type", "text");
+        editTextBox.setAttribute("class", "note");
         editTextBox.value = noteText;
         note.appendChild(editForm);
         editForm.appendChild(div);
-        div.appendChild(spacerBox);
+        // div.appendChild(spacerBox);
         editForm.appendChild(editTextBox);
         editTextBox.focus();
-        editForm.addEventListener('submit', restoreNote);
-        editTextBox.addEventListener('blur', restoreNote);
+        editForm.addEventListener("submit", restoreNote);
+        editTextBox.addEventListener("blur", restoreNote);
         function restoreNote() {
             var newNote = noteTemplate.content.firstElementChild.cloneNode(true);
-            newNote.querySelector('#todo').textContent = editTextBox.value;
-            var deleteButton = newNote.querySelector('button');
+            newNote.querySelector("#todo").textContent = editTextBox.value;
+            var deleteButton = newNote.querySelector("button");
             deleteButton.onclick = function (event) {
-                var toRemove = notes.findIndex(function (i) { return i.index == parseInt(note.getAttribute('id')); });
+                var toRemove = notes.findIndex(function (i) { return i.index == parseInt(note.getAttribute("id")); });
                 notes.splice(toRemove, 1);
                 newNote.remove();
                 updateCounter();
             };
-            editTextBox.removeEventListener('blur', restoreNote);
+            editTextBox.removeEventListener("blur", restoreNote);
             note.replaceChildren(newNote);
+            updateCounter();
         }
-    });
-    updateCounter();
+    }
 }
 function updateCounter() {
     var count = notes.length;
     if (count == 1) {
-        counter.textContent = count + 'item left';
+        counter.textContent = count + "item left";
     }
     else if (count == 0) {
-        counter.textContent = '';
+        counter.textContent = "";
     }
     else {
-        counter.textContent = count + 'items left';
+        counter.textContent = count + "items left";
     }
 }

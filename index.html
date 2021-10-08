@@ -11,20 +11,21 @@
 </head> 
       
 <body>
-    <header>
-      <h1>todos</h1>
-    </header>
     
-    <!-- Searchbar window -->
     <main>
+      <header>
+        <h1>todos</h1>
+      </header>
+      <!-- Searchbar window -->
         <form>
           <div class="parent">
             <div class="left-frame"><button type="button" id="button">🔽</button></div>
             <input type="text" class="searchbar" placeholder="What needs to be done?">
         </div>
         </form>
+         <!-- End of searchbar window -->
     </main>
-    <!-- End of searchbar window -->
+   
     
     
 
@@ -32,13 +33,17 @@
       <div class="parent">
         <button type="button" id="remove-list-item">❌</button> 
           <div class="left-frame">
-            <label class="container"><input type="checkbox"></input><span id="checkbox"></span></label>
+            <label class="container">
+              <input type="checkbox" id="boxcheck"></input>
+              <span class="note" id="todo"></span>
+            <span id="checkbox"></span>
+          </label>
           </div> 
-          <span class="note" id="todo"></span>
+          <!-- <span class="note" id="todo"></span> -->
       </div> <!--  closes "parent div" -->
     </template>
     
-    <span id="items-left">Where dis?</span>
+    <span id="items-left"></span>
       
       <!--
          <aside class="footer">
