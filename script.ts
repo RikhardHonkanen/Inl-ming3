@@ -25,7 +25,9 @@ form.onsubmit = (event) => {
   let noteText: string = formText.value;
 
   if (noteText === "") {
-  } else {
+    //Do nothing
+  } 
+  else {
     let noteObject = new Note();
     noteObject.text = noteText;
     noteObject.done = false;
@@ -56,18 +58,55 @@ function createNote(noteText: string, noteIndex: number) {
     updateCounter();
   };
 
+  const checkBox = note.querySelector("#boxcheck") as HTMLInputElement;
+  checkBox.onclick = event => {
+    
+    for (let i = 0; i < notes.length; i++) {
+      if (checkBox[i].checked === true) {
+        notes[i].done = true;
+        let number = notes[i];
+        console.log(number + " is done");
+      }
+      else {
+        notes[i].done = false;
+        let number = notes[i];
+        console.log(number + " is undone");
+      }
+    }
+    updateCounter();
+  }
+
   let checkAllButton = document.querySelector("#button") as HTMLButtonElement;
   checkAllButton.addEventListener("click", TrueCheckBoxes);
   function TrueCheckBoxes() {
-    const checkBox = note.querySelector("#boxcheck") as HTMLInputElement;
+    
+  var checkedBox = document.querySelectorAll('input:checked');
 
+  if (checkedBox.length === 0) {
+    // there are no checked checkboxes
+    console.log('no checkboxes checked');
     checkBox.checked = !checkBox.checked;
+      for (let i = 0; i < notes.length; i++) {
+        notes[i].done = true;
+      }
+    }
+  else if (checkedBox.length === checkBox.maxLength) {
+    // there are some checked checkboxes
+    console.log(checkedBox.length + ' checkboxes checked');
+    checkBox.checked = !checkBox.checked;
+    for (let i = 0; i < notes.length; i++) {
+      notes[i].done = false;
+    }
+  } 
 
-    // for (let i = 0; i < notes.length; i++) {
-    //   if (checkBox[i].checked === false) {
-    //     checkBox[i].checked = true;
-    //     }
-    // }
+    for (let i = 0; i < notes.length; i++) {
+      if (notes[i].done === true) {
+        
+      }
+      else {
+        checkBox.checked = true;
+      }
+    }
   }
 
   notesList.append(note);
@@ -122,11 +161,23 @@ function createNote(noteText: string, noteIndex: number) {
 
 function updateCounter() {
   let count = notes.length;
+
+  for (let i = 0; i < notes.length; i++) {
+    if (notes[i].done === true) {
+      count--;
+    }
+  }
+  
   if (count == 1) {
-    counter.textContent = count + "item left";
+    
+    counter.textContent = count + " item left";
+
   } else if (count == 0) {
+    
     counter.textContent = "";
+
   } else {
-    counter.textContent = count + "items left";
+    
+    counter.textContent = count + " items left";
   }
 }
