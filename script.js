@@ -17,6 +17,7 @@ form.onsubmit = function (event) {
     event.preventDefault();
     var noteText = formText.value;
     if (noteText === "") {
+        //Do nothing
     }
     else {
         var noteObject = new Note();
@@ -40,16 +41,49 @@ function createNote(noteText, noteIndex) {
         note.remove();
         updateCounter();
     };
+    var checkBox = note.querySelector("#boxcheck");
+    checkBox.onclick = function (event) {
+        for (var i = 0; i < notes.length; i++) {
+            if (checkBox.checked === true) {
+                notes[i].done = true;
+                var number = notes[i];
+                console.log(number + " is done");
+            }
+            else {
+                notes[i].done = false;
+                var number = notes[i];
+                console.log(number + " is undone");
+            }
+        }
+        updateCounter();
+    };
     var checkAllButton = document.querySelector("#button");
     checkAllButton.addEventListener("click", TrueCheckBoxes);
     function TrueCheckBoxes() {
-        var checkBox = note.querySelector("#boxcheck");
-        checkBox.checked = !checkBox.checked;
-        // for (let i = 0; i < notes.length; i++) {
-        //   if (checkBox[i].checked === false) {
-        //     checkBox[i].checked = true;
-        //     }
-        // }
+        var checkedBox = document.querySelectorAll('input:checked');
+        if (checkedBox.length === 0) {
+            // there are no checked checkboxes
+            console.log('no checkboxes checked');
+            checkBox.checked = !checkBox.checked;
+            for (var i = 0; i < notes.length; i++) {
+                notes[i].done = true;
+            }
+        }
+        else if (checkedBox.length === checkBox.maxLength) {
+            // there are some checked checkboxes
+            console.log(checkedBox.length + ' checkboxes checked');
+            checkBox.checked = !checkBox.checked;
+            for (var i = 0; i < notes.length; i++) {
+                notes[i].done = false;
+            }
+        }
+        for (var i = 0; i < notes.length; i++) {
+            if (notes[i].done === true) {
+            }
+            else {
+                checkBox.checked = true;
+            }
+        }
     }
     notesList.append(note);
     formText.value = "";
@@ -93,13 +127,18 @@ function createNote(noteText, noteIndex) {
 }
 function updateCounter() {
     var count = notes.length;
+    for (var i = 0; i < notes.length; i++) {
+        if (notes[i].done === true) {
+            count--;
+        }
+    }
     if (count == 1) {
-        counter.textContent = count + "item left";
+        counter.textContent = count + " item left";
     }
     else if (count == 0) {
         counter.textContent = "";
     }
     else {
-        counter.textContent = count + "items left";
+        counter.textContent = count + " items left";
     }
 }

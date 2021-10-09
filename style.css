@@ -84,6 +84,7 @@ button:hover {
     display: inline-block;
     margin-left: 50px;
     padding-left: 2px;
+    padding: 1px;
     word-break: break-all;
     /* border: none;
     border-color: none; */
@@ -92,8 +93,8 @@ button:hover {
 
 .note:focus {
     flex: 1;
-    margin-left: 45px;
-    height: 48px;
+    margin-left: 35px;
+    padding: 10px;
     text-indent: 5px;
     outline: none;
     border: 1px solid grey;
@@ -142,7 +143,7 @@ button:hover {
   /* Create a custom checkbox */
   #checkbox {
     position: absolute;
-    inset: 1px 0 0 7px;
+    inset: 1px 0 7px 7px;
     margin: auto 0;
     height: 25px;
     width: 25px;
@@ -172,6 +173,7 @@ input[type="checkbox"]:checked + span {
     opacity: 50%; 
     font-size: 15px;
     margin-bottom: 9px;
+    z-index: 1;
 }
 
 .parent:hover > #remove-list-item{
