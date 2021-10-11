@@ -1,22 +1,22 @@
 class Note {
-  index: number;
-  text: string;
-  done: boolean;
+  index: number = 0;
+  text: string = "";
+  done: boolean = false;  
 }
 
 const noteTemplate = document.querySelector(
   "#list-item"
 ) as HTMLTemplateElement;
-const notesList = document.querySelector("main") as HTMLElement;
-const form = document.querySelector("form");
-const formText = document.querySelector("input") as HTMLInputElement;
-const counter = document.getElementById("items-left");
+const notesList = document.querySelector("main")! as HTMLElement;
+const form = document.querySelector("form")!;
+const formText = document.querySelector("input")! as HTMLInputElement;
+const counter = document.getElementById("items-left")!;
 const notes: Note[] = [];
 let noteIndex: number = 0;
-let editTextBox = document.createElement("input");
+let editTextBox = document.createElement("input")!;
 let noteText: string = formText.value;
 
-const note = noteTemplate.content.firstElementChild.cloneNode(
+const note = noteTemplate.content.firstElementChild!.cloneNode(
   true
 ) as HTMLElement;
 
@@ -41,24 +41,24 @@ form.onsubmit = (event) => {
 };
 
 function createNote(noteText: string, noteIndex: number) {
-  const note = noteTemplate.content.firstElementChild.cloneNode(
+  const note = noteTemplate.content.firstElementChild!.cloneNode(
     true
   ) as HTMLElement;
 
-  note.querySelector("#todo").textContent = noteText;
+  note.querySelector("#todo")!.textContent = noteText;
   note.setAttribute("id", noteIndex.toString());
 
-  const deleteButton = note.querySelector("button");
+  const deleteButton = note.querySelector("button")!;
   deleteButton.onclick = (event) => {
     let toRemove = notes.findIndex(
-      (i) => i.index == parseInt(note.getAttribute("id"))
+      (i) => i.index == parseInt(note.getAttribute("id")!)
     );
     notes.splice(toRemove, 1);
     note.remove();
     updateCounter();
   };
 
-  const checkBox = note.querySelector("#boxcheck") as HTMLInputElement;
+  const checkBox = note.querySelector("#boxcheck")! as HTMLInputElement;
   checkBox.onclick = event => {
     
     for (let i = 0; i < notes.length; i++) {
@@ -114,7 +114,7 @@ function createNote(noteText: string, noteIndex: number) {
 
   note.addEventListener("dblclick", editNote);
   function editNote() {
-    noteText = note.querySelector("#todo").textContent;
+    noteText = note.querySelector("#todo")!.textContent!;
     note.replaceChildren();
 
     let editForm = document.createElement("form");
@@ -137,15 +137,15 @@ function createNote(noteText: string, noteIndex: number) {
     editTextBox.addEventListener("blur", restoreNote);
 
     function restoreNote() {
-      const newNote = noteTemplate.content.firstElementChild.cloneNode(
+      const newNote = noteTemplate.content.firstElementChild!.cloneNode(
         true
       ) as HTMLElement;
-      newNote.querySelector("#todo").textContent = editTextBox.value;
+      newNote.querySelector("#todo")!.textContent = editTextBox.value;
 
-      const deleteButton = newNote.querySelector("button");
+      const deleteButton = newNote.querySelector("button")!;
       deleteButton.onclick = (event) => {
         let toRemove = notes.findIndex(
-          (i) => i.index == parseInt(note.getAttribute("id"))
+          (i) => i.index == parseInt(note.getAttribute("id")!)
         );
         notes.splice(toRemove, 1);
         newNote.remove();

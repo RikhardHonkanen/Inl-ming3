@@ -1,5 +1,8 @@
 var Note = /** @class */ (function () {
     function Note() {
+        this.index = 0;
+        this.text = "";
+        this.done = false;
     }
     return Note;
 }());
@@ -44,7 +47,7 @@ function createNote(noteText, noteIndex) {
     var checkBox = note.querySelector("#boxcheck");
     checkBox.onclick = function (event) {
         for (var i = 0; i < notes.length; i++) {
-            if (checkBox.checked === true) {
+            if (checkBox[i].checked === true) {
                 notes[i].done = true;
                 var number = notes[i];
                 console.log(number + " is done");
