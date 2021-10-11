@@ -1,23 +1,24 @@
 class Note {
   index: number = 0;
   text: string = "";
-  done: boolean = false;  
+  done: boolean = false;
 }
 
 const noteTemplate = document.querySelector(
   "#list-item"
 ) as HTMLTemplateElement;
 const notesList = document.querySelector("main")! as HTMLElement;
-const form = document.querySelector("form")!;
+const form = document.querySelector("form")! as HTMLFormElement;
 const formText = document.querySelector("input")! as HTMLInputElement;
-const counter = document.getElementById("items-left")!;
+const counter = document.getElementById("items-left")! as HTMLElement;
 const notes: Note[] = [];
 let noteIndex: number = 0;
-let editTextBox = document.createElement("input")!;
+let editTextBox = document.createElement("input")! as HTMLInputElement;
 let noteText: string = formText.value;
-const asideStyle = document.querySelector("aside")!;
+const asideStyle = document.querySelector("aside")! as HTMLElement;
 const checkAllButton = document.querySelector("#button")! as HTMLButtonElement;
-const completedVisible = document.getElementById("clearallcompleted")! as HTMLButtonElement;
+const completedButtonVisible = document.getElementById("clearallcompleted")! as HTMLButtonElement;
+let override: boolean = false;
 
 function loadLocalStorage() {
   if (localStorage.length > 0) {
@@ -29,15 +30,15 @@ function loadLocalStorage() {
       let noteDone: boolean = false;
       if (localStorage.getItem(noteText!) == "true") {
         noteDone = true;
-      }  
-  
+      }
+
       let noteObject = new Note();
       noteObject.text = noteText;
       noteObject.done = noteDone;
       noteObject.index = noteIndex;
       notes.push(noteObject);
       noteIndex++;
-  
+
       createNote(noteText, noteIndex, noteDone);
     }
   }
@@ -50,8 +51,7 @@ form.onsubmit = (event) => {
 
   if (noteText === "") {
     //Do nothing
-  } 
-  else {
+  } else {
     let noteObject = new Note();
     noteObject.text = noteText;
     noteObject.done = false;
@@ -85,23 +85,38 @@ function createNote(noteText: string, noteIndex: number, noteDone: boolean) {
     updateCounter();
   };
 
+  //Clear all "checked" notes
+completedButtonVisible.onclick = (event) => {
+  let i: number = 0;
+  let toRemove = notes.findIndex(
+    (i) => i.index == parseInt(note.getAttribute("id")!)
+  );
+  notes.forEach((element) => {
+    if (element.done === true) {
+      notes.splice(toRemove, i);
+      note.remove();
+    }
+  });
+  updateLocalStorage();
+  updateCounter();
+}
+
   const checkBox = note.querySelector("#boxcheck")! as HTMLInputElement;
   if (noteDone == true) {
     checkBox.checked = true;
   }
-  checkBox.onclick = event => {
+  checkBox.onclick = (event) => {
     let setDoneUndone = notes.findIndex(
       (i) => i.index == parseInt(note.getAttribute("id")!)
     );
     if (checkBox.checked === true) {
       notes[setDoneUndone].done = true;
-      completedVisible.style.visibility = "visible";
-    }
-    else {
+      completedButtonVisible.style.visibility = "visible";
+    } else {
       notes[setDoneUndone].done = false;
     }
-    updateCounter(); 
-  }  
+    updateCounter();
+  };
 
   notesList.append(note);
   formText.value = "";
@@ -133,9 +148,7 @@ function createNote(noteText: string, noteIndex: number, noteDone: boolean) {
       newNote.querySelector("#todo")!.textContent = editTextBox.value;
       newNote.setAttribute("id", noteIndex.toString());
 
-      let noteToEdit = notes.findIndex(
-        (i) => i.index == noteIndex
-      );
+      let noteToEdit = notes.findIndex((i) => i.index == noteIndex);
       notes[noteToEdit].text = editTextBox.value;
       notes[noteToEdit].done = false;
 
@@ -151,19 +164,17 @@ function createNote(noteText: string, noteIndex: number, noteDone: boolean) {
       };
 
       const checkBox = newNote.querySelector("#boxcheck")! as HTMLInputElement;
-      checkBox.onclick = event => {
+      checkBox.onclick = (event) => {
         let setDoneUndone = notes.findIndex(
           (i) => i.index == parseInt(note.getAttribute("id")!)
         );
         if (checkBox.checked === true) {
           notes[setDoneUndone].done = true;
-          
-        }
-        else {
+        } else {
           notes[setDoneUndone].done = false;
         }
         updateCounter();
-      }  
+      };
 
       editTextBox.removeEventListener("blur", restoreNote);
 
@@ -174,78 +185,82 @@ function createNote(noteText: string, noteIndex: number, noteDone: boolean) {
 }
 
 checkAllButton.addEventListener("click", trueCheckBoxes);
-function trueCheckBoxes() {  
-  let checkedBox = <HTMLInputElement[]><any>document.querySelectorAll('input[type=checkbox]');
+function trueCheckBoxes() {
+  let checkedBox = <HTMLInputElement[]>(
+    (<any>document.querySelectorAll("input[type=checkbox]"))
+  );
   if (notes.length === 0) {
     // Do nothing
-  }
+  } 
   else {
     let completed = 0;
     notes.forEach((element) => {
       if (element.done == true) {
         completed++;
       }
-    })
+    });
     if (completed == notes.length) {
       checkedBox.forEach((checkbox) => {
         checkbox.checked = false;
-      })      
+      });
       notes.forEach((element) => {
         element.done = false;
-        updateCounter();
-      })
-    }
+      });
+    } 
     else {
       checkedBox.forEach((checkbox) => {
         checkbox.checked = true;
-      })      
+      });
       notes.forEach((element) => {
         element.done = true;
-        updateCounter();
-      })      
+      });
     }
   }
+  override = true;
+  updateCounter();
 }
 
 function updateCounter() {
   let count = notes.length;
   
+  //Overrides the normal behavior that would make completedButtonVisible hidden
+  if (override === true) {
+    completedButtonVisible.style.visibility = "visible";
+    override = false;
+  }
+
   if (count === 0) {
     asideStyle.style.visibility = "hidden";
     checkAllButton.style.visibility = "hidden";
-    completedVisible.style.visibility = "hidden";
-  }
-
+    completedButtonVisible.style.visibility = "hidden";
+  } 
   else {
-    completedVisible.style.visibility = "visible";
-
-    for (let i = 0; i < notes.length; i++) {
-      if (notes[i].done === true) {
+    notes.forEach((note) => {
+      if (note.done === true) {
         count--;
       }
+    });
+    if (count === 1) {
+      counter.textContent = "1 item left";
     }
-    
-    if (count == 1) {
-      counter.textContent = count + " item left";
-      
-    } 
-    else if (count == 0) {
-      counter.textContent = count + " items left";
-    } 
     else if (count == notes.length) {
       counter.textContent = count + " items left";
-      completedVisible.style.visibility = "hidden";
+      completedButtonVisible.style.visibility = "hidden";
     }
     else {
       counter.textContent = count + " items left";
+      count++;
     }
   }
   updateLocalStorage();
 }
 
+
 function updateLocalStorage() {
   localStorage.clear();
   notes.forEach((element) => {
     localStorage.setItem(element.text, element.done.toString());
-  })
+  });
 }
+
+

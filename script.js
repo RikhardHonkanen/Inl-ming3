@@ -17,7 +17,8 @@ var editTextBox = document.createElement("input");
 var noteText = formText.value;
 var asideStyle = document.querySelector("aside");
 var checkAllButton = document.querySelector("#button");
-var completedVisible = document.getElementById("clearallcompleted");
+var completedButtonVisible = document.getElementById("clearallcompleted");
+var override = false;
 function loadLocalStorage() {
     if (localStorage.length > 0) {
         asideStyle.style.visibility = "visible";
@@ -69,6 +70,19 @@ function createNote(noteText, noteIndex, noteDone) {
         note.remove();
         updateCounter();
     };
+    //Clear all "checked" notes
+    completedButtonVisible.onclick = function (event) {
+        var i = 0;
+        var toRemove = notes.findIndex(function (i) { return i.index == parseInt(note.getAttribute("id")); });
+        notes.forEach(function (element) {
+            if (element.done === true) {
+                notes.splice(toRemove, i);
+                note.remove();
+            }
+        });
+        updateLocalStorage();
+        updateCounter();
+    };
     var checkBox = note.querySelector("#boxcheck");
     if (noteDone == true) {
         checkBox.checked = true;
@@ -77,7 +91,7 @@ function createNote(noteText, noteIndex, noteDone) {
         var setDoneUndone = notes.findIndex(function (i) { return i.index == parseInt(note.getAttribute("id")); });
         if (checkBox.checked === true) {
             notes[setDoneUndone].done = true;
-            completedVisible.style.visibility = "visible";
+            completedButtonVisible.style.visibility = "visible";
         }
         else {
             notes[setDoneUndone].done = false;
@@ -138,7 +152,7 @@ function createNote(noteText, noteIndex, noteDone) {
 }
 checkAllButton.addEventListener("click", trueCheckBoxes);
 function trueCheckBoxes() {
-    var checkedBox = document.querySelectorAll('input[type=checkbox]');
+    var checkedBox = document.querySelectorAll("input[type=checkbox]");
     if (notes.length === 0) {
         // Do nothing
     }
@@ -155,7 +169,6 @@ function trueCheckBoxes() {
             });
             notes.forEach(function (element) {
                 element.done = false;
-                updateCounter();
             });
         }
         else {
@@ -164,37 +177,40 @@ function trueCheckBoxes() {
             });
             notes.forEach(function (element) {
                 element.done = true;
-                updateCounter();
             });
         }
     }
+    override = true;
+    updateCounter();
 }
 function updateCounter() {
     var count = notes.length;
+    //Overrides the normal behavior that would make completedButtonVisible hidden
+    if (override === true) {
+        completedButtonVisible.style.visibility = "visible";
+        override = false;
+    }
     if (count === 0) {
         asideStyle.style.visibility = "hidden";
         checkAllButton.style.visibility = "hidden";
-        completedVisible.style.visibility = "hidden";
+        completedButtonVisible.style.visibility = "hidden";
     }
     else {
-        completedVisible.style.visibility = "visible";
-        for (var i = 0; i < notes.length; i++) {
-            if (notes[i].done === true) {
+        notes.forEach(function (note) {
+            if (note.done === true) {
                 count--;
             }
-        }
-        if (count == 1) {
-            counter.textContent = count + " item left";
-        }
-        else if (count == 0) {
-            counter.textContent = count + " items left";
+        });
+        if (count === 1) {
+            counter.textContent = "1 item left";
         }
         else if (count == notes.length) {
             counter.textContent = count + " items left";
-            completedVisible.style.visibility = "hidden";
+            completedButtonVisible.style.visibility = "hidden";
         }
         else {
             counter.textContent = count + " items left";
+            count++;
         }
     }
     updateLocalStorage();
