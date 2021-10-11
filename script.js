@@ -1,5 +1,8 @@
 var Note = /** @class */ (function () {
     function Note() {
+        this.index = 0;
+        this.text = "";
+        this.done = false;
     }
     return Note;
 }());
