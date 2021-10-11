@@ -15,9 +15,30 @@ var notes = [];
 var noteIndex = 0;
 var editTextBox = document.createElement("input");
 var noteText = formText.value;
-var asideStyle = document.getElementById("aside");
+var asideStyle = document.querySelector("aside");
 var checkAllButton = document.querySelector("#button");
-var note = noteTemplate.content.firstElementChild.cloneNode(true);
+var completedVisible = document.getElementById("clearallcompleted");
+function loadLocalStorage() {
+    if (localStorage.length > 0) {
+        asideStyle.style.visibility = "visible";
+        checkAllButton.style.visibility = "visible";
+        for (var i = 0; i < localStorage.length; i++) {
+            noteText = localStorage.key(i);
+            var noteDone = false;
+            if (localStorage.getItem(noteText) == "true") {
+                noteDone = true;
+            }
+            var noteObject = new Note();
+            noteObject.text = noteText;
+            noteObject.done = noteDone;
+            noteObject.index = noteIndex;
+            notes.push(noteObject);
+            noteIndex++;
+            createNote(noteText, noteIndex, noteDone);
+        }
+    }
+}
+loadLocalStorage();
 form.onsubmit = function (event) {
     event.preventDefault();
     var noteText = formText.value;
@@ -30,12 +51,14 @@ form.onsubmit = function (event) {
         noteObject.done = false;
         noteObject.index = noteIndex;
         notes.push(noteObject);
-        createNote(noteText, noteIndex);
+        asideStyle.style.visibility = "visible";
+        checkAllButton.style.visibility = "visible";
+        createNote(noteText, noteIndex, false);
         noteIndex++;
         updateCounter();
     }
 };
-function createNote(noteText, noteIndex) {
+function createNote(noteText, noteIndex, noteDone) {
     var note = noteTemplate.content.firstElementChild.cloneNode(true);
     note.querySelector("#todo").textContent = noteText;
     note.setAttribute("id", noteIndex.toString());
@@ -47,68 +70,36 @@ function createNote(noteText, noteIndex) {
         updateCounter();
     };
     var checkBox = note.querySelector("#boxcheck");
+    if (noteDone == true) {
+        checkBox.checked = true;
+    }
     checkBox.onclick = function (event) {
-        for (var i = 0; i < notes.length; i++) {
-            if (checkBox[i].checked === true) {
-                notes[i].done = true;
-                var number = notes[i];
-                console.log(number + " is done");
-            }
-            else {
-                notes[i].done = false;
-                var number = notes[i];
-                console.log(number + " is undone");
-            }
+        var setDoneUndone = notes.findIndex(function (i) { return i.index == parseInt(note.getAttribute("id")); });
+        if (checkBox.checked === true) {
+            notes[setDoneUndone].done = true;
+            completedVisible.style.visibility = "visible";
+        }
+        else {
+            notes[setDoneUndone].done = false;
         }
         updateCounter();
     };
-    checkAllButton.addEventListener("click", TrueCheckBoxes);
-    function TrueCheckBoxes() {
-        var checkedBox = document.querySelectorAll('input:checked');
-        if (checkedBox.length === 0) {
-            // there are no checked checkboxes
-            console.log('no checkboxes checked');
-            checkBox.checked = !checkBox.checked;
-            for (var i = 0; i < notes.length; i++) {
-                notes[i].done = true;
-            }
-        }
-        else if (checkedBox.length === checkBox.maxLength) {
-            // there are some checked checkboxes
-            console.log(checkedBox.length + ' checkboxes checked');
-            checkBox.checked = !checkBox.checked;
-            for (var i = 0; i < notes.length; i++) {
-                notes[i].done = false;
-            }
-        }
-        for (var i = 0; i < notes.length; i++) {
-            if (notes[i].done === true) {
-            }
-            else {
-                checkBox.checked = true;
-            }
-        }
-    }
     notesList.append(note);
     formText.value = "";
     note.addEventListener("dblclick", editNote);
     function editNote() {
         noteText = note.querySelector("#todo").textContent;
+        noteIndex = parseInt(note.getAttribute("id"));
         note.replaceChildren();
         var editForm = document.createElement("form");
         editForm.setAttribute("class", "parent");
         var div = document.createElement("div");
         div.setAttribute("class", "left-frame");
-        // let spacerBox = document.createElement("input");
-        // spacerBox.setAttribute("type", "checkbox");
-        // spacerBox.setAttribute("id", "falsebox");
-        // spacerBox.setAttribute("style", "opacity: 0");
         editTextBox.setAttribute("type", "text");
         editTextBox.setAttribute("class", "note");
         editTextBox.value = noteText;
         note.appendChild(editForm);
         editForm.appendChild(div);
-        // div.appendChild(spacerBox);
         editForm.appendChild(editTextBox);
         editTextBox.focus();
         editForm.addEventListener("submit", restoreNote);
@@ -116,11 +107,27 @@ function createNote(noteText, noteIndex) {
         function restoreNote() {
             var newNote = noteTemplate.content.firstElementChild.cloneNode(true);
             newNote.querySelector("#todo").textContent = editTextBox.value;
+            newNote.setAttribute("id", noteIndex.toString());
+            var noteToEdit = notes.findIndex(function (i) { return i.index == noteIndex; });
+            notes[noteToEdit].text = editTextBox.value;
+            notes[noteToEdit].done = false;
+            // Some duplicate code for controls in here, did not seem to work well just looping back to createNote
             var deleteButton = newNote.querySelector("button");
             deleteButton.onclick = function (event) {
                 var toRemove = notes.findIndex(function (i) { return i.index == parseInt(note.getAttribute("id")); });
                 notes.splice(toRemove, 1);
                 newNote.remove();
+                updateCounter();
+            };
+            var checkBox = newNote.querySelector("#boxcheck");
+            checkBox.onclick = function (event) {
+                var setDoneUndone = notes.findIndex(function (i) { return i.index == parseInt(note.getAttribute("id")); });
+                if (checkBox.checked === true) {
+                    notes[setDoneUndone].done = true;
+                }
+                else {
+                    notes[setDoneUndone].done = false;
+                }
                 updateCounter();
             };
             editTextBox.removeEventListener("blur", restoreNote);
@@ -129,26 +136,72 @@ function createNote(noteText, noteIndex) {
         }
     }
 }
-function updateCounter() {
-    var count = notes.length;
-    for (var i = 0; i < notes.length; i++) {
-        if (notes[i].done === true) {
-            count--;
-        }
-    }
-    if (count == 1) {
-        counter.textContent = count + " item left";
-        asideStyle.style.visibility = "visible";
-        checkAllButton.style.visibility = "visible";
-    }
-    else if (count == 0) {
-        counter.textContent = "";
-        asideStyle.style.visibility = "hidden";
-        checkAllButton.style.visibility = "hidden";
+checkAllButton.addEventListener("click", trueCheckBoxes);
+function trueCheckBoxes() {
+    var checkedBox = document.querySelectorAll('input[type=checkbox]');
+    if (notes.length === 0) {
+        // Do nothing
     }
     else {
-        counter.textContent = count + " items left";
-        asideStyle.style.visibility = "visible";
-        checkAllButton.style.visibility = "visible";
+        var completed_1 = 0;
+        notes.forEach(function (element) {
+            if (element.done == true) {
+                completed_1++;
+            }
+        });
+        if (completed_1 == notes.length) {
+            checkedBox.forEach(function (checkbox) {
+                checkbox.checked = false;
+            });
+            notes.forEach(function (element) {
+                element.done = false;
+                updateCounter();
+            });
+        }
+        else {
+            checkedBox.forEach(function (checkbox) {
+                checkbox.checked = true;
+            });
+            notes.forEach(function (element) {
+                element.done = true;
+                updateCounter();
+            });
+        }
     }
+}
+function updateCounter() {
+    var count = notes.length;
+    if (count === 0) {
+        asideStyle.style.visibility = "hidden";
+        checkAllButton.style.visibility = "hidden";
+        completedVisible.style.visibility = "hidden";
+    }
+    else {
+        completedVisible.style.visibility = "visible";
+        for (var i = 0; i < notes.length; i++) {
+            if (notes[i].done === true) {
+                count--;
+            }
+        }
+        if (count == 1) {
+            counter.textContent = count + " item left";
+        }
+        else if (count == 0) {
+            counter.textContent = count + " items left";
+        }
+        else if (count == notes.length) {
+            counter.textContent = count + " items left";
+            completedVisible.style.visibility = "hidden";
+        }
+        else {
+            counter.textContent = count + " items left";
+        }
+    }
+    updateLocalStorage();
+}
+function updateLocalStorage() {
+    localStorage.clear();
+    notes.forEach(function (element) {
+        localStorage.setItem(element.text, element.done.toString());
+    });
 }

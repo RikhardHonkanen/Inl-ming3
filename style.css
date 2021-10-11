@@ -12,6 +12,7 @@ body {
     min-width: 230px;
     font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background-color: #f5f5f5;
+    color: #777;
 }
 
 
@@ -71,8 +72,6 @@ main {
 button:hover {
     cursor: pointer;
 }
-
-
 
 /* "searchbar" in above  */
 .note {
@@ -185,13 +184,14 @@ aside {
     visibility: hidden;
 }
 
-span {
+aside span {
     margin-left: 10px;
     padding: 4px;
+    min-width: 80px;
 }
 
 .filters {
-    margin-left: 6rem;
+    margin-left: 5rem;
     position: relative;
 }
 
@@ -200,6 +200,7 @@ aside button {
     background-color: white;
     border: none;
     padding: 4px;
+    color: #777;
     /* Empty border to avoid shifting on hover */
     border: 1px solid rgba(0, 0, 0, 0);
 }
@@ -207,12 +208,24 @@ aside button {
 aside button:hover {
     border: 1px solid rgba(175, 47, 47, 0.15);
     border-radius: 3px;
-    
 }
 
 aside button:focus {
     border: 1px solid rgba(175, 47, 47, 0.15);
     border-radius: 3px;
+}
+#clearallcompleted {
+    margin-left: 53px;
+    visibility: hidden;
+    padding: 4px;
+    min-width: 80px;
+    font-size: 13px;
+    border: none;
+}
+
+#clearallcompleted:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 footer {
@@ -231,125 +244,3 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
-
-
-
-
-/* .container {
-    position: relative;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    text-align: center;
-  } */
-  
-  /* Hide the browser's default checkbox */
-  
-  /* .container input {
-    position: absolute;
-    opacity: 0;
-  } */
-  
-  /* Create the checkmark/indicator (hidden when not checked) */
-  /* #checkbox:after {
-    content: "";
-    position: absolute;
-    display: none;
-  }
-   */
-  /* Show the checkmark when checked */
-  /* .container input:checked~#checkbox:after {
-    display: block;
-  } */
-  
-  
-  
-  /* Create a custom checkbox */
-  /* #checkbox {
-    position: absolute;
-    top: 2px;
-    left: 8px;
-    height: 25px;
-    width: 25px;
-    text-align: center;
-    border-radius: 50%;
-    border: 1px solid #ddd;
-    appearance: none;
-    -webkit-appearance: none;
-    outline: none;
-    cursor: pointer;
-  } */
-
-  
-/* 
-
-
-.page-note {
-    background-color: white;
-    margin: 0 auto;
-    width: 550px;
-    border-top: 1px solid rgba(128, 128, 128, 0.445);
-}
-
-#checkbox {
-    position: relative;
-    left: 10px;
-    top: 50px;
-    width: 30px;
-    height: 30px;
-    color: #4d4d4d;
-}
-
-#list li {
-    margin-bottom: -10px;
-    margin-top: -20px;
-    list-style: none;
-}
-
-
-
-
-input[type="text"] {
-    text-align:center;
-    font-size: 24px;
-    font-style: italic;
-    margin-left: 350px;
-}
-
-.note {
-    font-size: 24px;
-    margin-left: 5px;
-    color: #4d4d4d;
-    word-break: break-all;
-    padding: 15px 15px 15px 60px;
-    display: block;
-    line-height: 1.2;
-}
-
-.page-note:hover #remove-list-item {
-    visibility: visible;
-}
-
-#remove-list-item {
-    position: relative;
-    left: 600px;
-    bottom: 40px;
-    visibility: hidden;
-    border: none;
-    background-color: transparent;
-    opacity: 50%;
-}
-
-
-
-
-
-.editnote{
-  width: 650px;
-  height: auto;
-  border: transparent;
-  border-top: 1px solid grey;
-} */
-

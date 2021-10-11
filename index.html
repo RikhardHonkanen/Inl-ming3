@@ -8,43 +8,23 @@
   <title>Backbone.js • TodoMVC</title>
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
-<<<<<<< HEAD
 </head>
-=======
-</head> 
-      
-<body>
-    
-    <main>
-      <header>
-        <h1>todos</h1>
-      </header>
-      <!-- Searchbar window -->
-        <form>
-          <div class="parent">
-            <div class="left-frame"><button type="button" id="button">🔽</button></div>
-            <input type="text" class="searchbar" placeholder="What needs to be done?">
-        </div>
-        </form>
-         <!-- End of searchbar window -->
-    </main>    
-    
->>>>>>> a07353cc2356c7ece90b313bfe02e11fdfe79ba6
-
 <body>
   <main>
+
     <header>
       <h1>todos</h1>
     </header>
+
     <!-- Searchbar window -->
     <form>
       <div class="parent">
-<<<<<<< HEAD
         <div class="left-frame"><button type="button" id="button">🔽</button></div>
         <input type="text" class="searchbar" placeholder="What needs to be done?">
       </div>
     </form>
     <!-- End of searchbar window -->
+
   </main>
 
   <template id="list-item">
@@ -56,31 +36,18 @@
           <span class="note" id="todo"></span>
           <span id="checkbox"></span>
         </label>
-      </div>
-      <!-- <span class="note" id="todo"></span> -->
+      </div> <!-- close left-frame div -->
     </div> <!--  closes "parent div" -->
   </template>
-
-  <aside id="aside">
-=======
-        <button type="button" id="remove-list-item">❌</button> 
-          <div class="left-frame">
-            <label class="container">
-              <input type="checkbox" id="boxcheck"></input>
-              <span class="note" id="todo"></span>
-            <span id="checkbox"></span>
-          </label>
-          </div> 
-      </div> <!--  closes "parent div" -->
-    </template>
     
->>>>>>> a07353cc2356c7ece90b313bfe02e11fdfe79ba6
+  <aside>
     <span id="items-left"></span>
     <div class="filters">
       <button>All</button>
       <button>Active</button>
       <button>Completed</button>
     </div>
+      <button id="clearallcompleted">Clear Completed</button>
   </aside>
 
   <footer>
