@@ -127,14 +127,14 @@ button:hover {
   }
   
   /* Style the checkmark/indicator */
-  /* Creates a backwards L-shape. Rotate rotates the shape to a checkmark */
+  /* Creates a backwards L-shape. "rotate" rotates the shape to a checkmark */
   .container #checkbox:after {
-    left: 7px;
-    top: 4px;
-    width: 6px;
-    height: 10px;
+    left: 8px;
+    top: 3px;
+    width: 7px;
+    height: 13px;
     border: solid green;
-    border-width: 0 3px 3px 0;
+    border-width: 0 1px 1px 0;
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
@@ -172,7 +172,7 @@ input[type="checkbox"]:checked + span {
     background-color: transparent; 
     opacity: 50%; 
     font-size: 15px;
-    margin-bottom: 9px;
+    margin-bottom: 10px;
     z-index: 1;
 }
 
