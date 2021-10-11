@@ -32,6 +32,8 @@ main {
     display: flex;
     box-shadow: 0 2px 4px 0 rgb(0 0 0 / 30%), 0 25px 50px 0 rgb(0 0 0 / 10%);
     width: inherit;
+    background-color: white;
+    position: relative;
 }
 
 .left-frame {
@@ -63,20 +65,14 @@ main {
     border: none;
     background-color: white;
     margin-right: 7px;
+    visibility: hidden;
 }
 
 button:hover {
     cursor: pointer;
 }
 
-/* Note element below */
-.parent {
-    background-color: white;
-    /* border: 1px solid rgba(128, 128, 128, 0.445); */
-    position: relative;
-    /* background-color: red; */
-    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 30%), 0 25px 50px 0 rgb(0 0 0 / 10%);
-}
+
 
 /* "searchbar" in above  */
 .note {
@@ -178,6 +174,45 @@ input[type="checkbox"]:checked + span {
 
 .parent:hover > #remove-list-item{
     visibility: visible;
+}
+
+aside {
+    display: flex;
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 30%), 0 25px 50px 0 rgb(0 0 0 / 10%);
+    padding: 0.6rem;
+    background-color: white;
+    position: relative;
+    visibility: hidden;
+}
+
+span {
+    margin-left: 10px;
+    padding: 4px;
+}
+
+.filters {
+    margin-left: 6rem;
+    position: relative;
+}
+
+aside button {
+    margin-left: 1rem;
+    background-color: white;
+    border: none;
+    padding: 4px;
+    /* Empty border to avoid shifting on hover */
+    border: 1px solid rgba(0, 0, 0, 0);
+}
+
+aside button:hover {
+    border: 1px solid rgba(175, 47, 47, 0.15);
+    border-radius: 3px;
+    
+}
+
+aside button:focus {
+    border: 1px solid rgba(175, 47, 47, 0.15);
+    border-radius: 3px;
 }
 
 footer {

@@ -8,61 +8,51 @@
   <title>Backbone.js • TodoMVC</title>
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
-</head> 
-      
-<body>
-    
-    <main>
-      <header>
-        <h1>todos</h1>
-      </header>
-      <!-- Searchbar window -->
-        <form>
-          <div class="parent">
-            <div class="left-frame"><button type="button" id="button">🔽</button></div>
-            <input type="text" class="searchbar" placeholder="What needs to be done?">
-        </div>
-        </form>
-         <!-- End of searchbar window -->
-    </main>
-   
-    
-    
+</head>
 
-    <template id="list-item">
+<body>
+  <main>
+    <header>
+      <h1>todos</h1>
+    </header>
+    <!-- Searchbar window -->
+    <form>
       <div class="parent">
-        <button type="button" id="remove-list-item">❌</button> 
-          <div class="left-frame">
-            <label class="container">
-              <input type="checkbox" id="boxcheck"></input>
-              <span class="note" id="todo"></span>
-            <span id="checkbox"></span>
-          </label>
-          </div> 
-          <!-- <span class="note" id="todo"></span> -->
-      </div> <!--  closes "parent div" -->
-    </template>
-    
+        <div class="left-frame"><button type="button" id="button">🔽</button></div>
+        <input type="text" class="searchbar" placeholder="What needs to be done?">
+      </div>
+    </form>
+    <!-- End of searchbar window -->
+  </main>
+
+  <template id="list-item">
+    <div class="parent">
+      <button type="button" id="remove-list-item">❌</button>
+      <div class="left-frame">
+        <label class="container">
+          <input type="checkbox" id="boxcheck"></input>
+          <span class="note" id="todo"></span>
+          <span id="checkbox"></span>
+        </label>
+      </div>
+      <!-- <span class="note" id="todo"></span> -->
+    </div> <!--  closes "parent div" -->
+  </template>
+
+  <aside id="aside">
     <span id="items-left"></span>
-      
-      <!--
-         <aside class="footer">
-          <span id="items-left"></span>
-          <div class="filters">
-                <button>All</button>
-                    <button>Active</button>
-                    <button>Completed</button>
-                </div>
-        </aside> -->
-        
-      
-    
-    <footer>
-      <p>Double-click to edit a todo</p>
-      <p>Written by <a href="https://github.com/addyosmani">Addy Osmani</a></p>
-      <p>Part of <a href="https://todomvc.com/">TodoMVC</a></p>
-    </footer>
- 
+    <div class="filters">
+      <button>All</button>
+      <button>Active</button>
+      <button>Completed</button>
+    </div>
+  </aside>
+
+  <footer>
+    <p>Double-click to edit a todo</p>
+    <p>Written by <a href="https://github.com/addyosmani">Addy Osmani</a></p>
+    <p>Part of <a href="https://todomvc.com/">TodoMVC</a></p>
+  </footer>
 </body>
 
 </html>

@@ -15,6 +15,8 @@ const notes: Note[] = [];
 let noteIndex: number = 0;
 let editTextBox = document.createElement("input");
 let noteText: string = formText.value;
+const asideStyle = document.getElementById("aside");
+const checkAllButton = document.querySelector("#button") as HTMLButtonElement;
 
 const note = noteTemplate.content.firstElementChild.cloneNode(
   true
@@ -76,7 +78,7 @@ function createNote(noteText: string, noteIndex: number) {
     updateCounter();
   }
 
-  let checkAllButton = document.querySelector("#button") as HTMLButtonElement;
+  
   checkAllButton.addEventListener("click", TrueCheckBoxes);
   function TrueCheckBoxes() {
     
@@ -171,13 +173,19 @@ function updateCounter() {
   if (count == 1) {
     
     counter.textContent = count + " item left";
+    asideStyle.style.visibility = "visible";
+    checkAllButton.style.visibility = "visible";
 
   } else if (count == 0) {
     
     counter.textContent = "";
+    asideStyle.style.visibility = "hidden";
+    checkAllButton.style.visibility = "hidden";
 
   } else {
     
     counter.textContent = count + " items left";
+    asideStyle.style.visibility = "visible";
+    checkAllButton.style.visibility = "visible";
   }
 }

@@ -12,6 +12,8 @@ var notes = [];
 var noteIndex = 0;
 var editTextBox = document.createElement("input");
 var noteText = formText.value;
+var asideStyle = document.getElementById("aside");
+var checkAllButton = document.querySelector("#button");
 var note = noteTemplate.content.firstElementChild.cloneNode(true);
 form.onsubmit = function (event) {
     event.preventDefault();
@@ -44,7 +46,7 @@ function createNote(noteText, noteIndex) {
     var checkBox = note.querySelector("#boxcheck");
     checkBox.onclick = function (event) {
         for (var i = 0; i < notes.length; i++) {
-            if (checkBox.checked === true) {
+            if (checkBox[i].checked === true) {
                 notes[i].done = true;
                 var number = notes[i];
                 console.log(number + " is done");
@@ -57,7 +59,6 @@ function createNote(noteText, noteIndex) {
         }
         updateCounter();
     };
-    var checkAllButton = document.querySelector("#button");
     checkAllButton.addEventListener("click", TrueCheckBoxes);
     function TrueCheckBoxes() {
         var checkedBox = document.querySelectorAll('input:checked');
@@ -134,11 +135,17 @@ function updateCounter() {
     }
     if (count == 1) {
         counter.textContent = count + " item left";
+        asideStyle.style.visibility = "visible";
+        checkAllButton.style.visibility = "visible";
     }
     else if (count == 0) {
         counter.textContent = "";
+        asideStyle.style.visibility = "hidden";
+        checkAllButton.style.visibility = "hidden";
     }
     else {
         counter.textContent = count + " items left";
+        asideStyle.style.visibility = "visible";
+        checkAllButton.style.visibility = "visible";
     }
 }
