@@ -80,7 +80,6 @@ function createNote(noteText, noteIndex, noteDone) {
                 note.remove();
             }
         });
-        updateLocalStorage();
         updateCounter();
     };
     var checkBox = note.querySelector("#boxcheck");
@@ -180,27 +179,26 @@ function trueCheckBoxes() {
             });
         }
     }
-    override = true;
     updateCounter();
 }
 function updateCounter() {
     var count = notes.length;
-    //Overrides the normal behavior that would make completedButtonVisible hidden
-    if (override === true) {
-        completedButtonVisible.style.visibility = "visible";
-        override = false;
-    }
     if (count === 0) {
         asideStyle.style.visibility = "hidden";
         checkAllButton.style.visibility = "hidden";
         completedButtonVisible.style.visibility = "hidden";
     }
     else {
+        asideStyle.style.visibility = "visible";
+        checkAllButton.style.visibility = "visible";
         notes.forEach(function (note) {
             if (note.done === true) {
                 count--;
             }
         });
+        if (count < notes.length) {
+            completedButtonVisible.style.visibility = "visible";
+        }
         if (count === 1) {
             counter.textContent = "1 item left";
         }

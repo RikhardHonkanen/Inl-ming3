@@ -86,7 +86,7 @@ function createNote(noteText: string, noteIndex: number, noteDone: boolean) {
   };
 
   //Clear all "checked" notes
-completedButtonVisible.onclick = (event) => {
+  completedButtonVisible.onclick = (event) => {
   let i: number = 0;
   let toRemove = notes.findIndex(
     (i) => i.index == parseInt(note.getAttribute("id")!)
@@ -97,7 +97,6 @@ completedButtonVisible.onclick = (event) => {
       note.remove();
     }
   });
-  updateLocalStorage();
   updateCounter();
 }
 
@@ -216,30 +215,29 @@ function trueCheckBoxes() {
       });
     }
   }
-  override = true;
   updateCounter();
 }
 
 function updateCounter() {
-  let count = notes.length;
+  let count = notes.length; 
   
-  //Overrides the normal behavior that would make completedButtonVisible hidden
-  if (override === true) {
-    completedButtonVisible.style.visibility = "visible";
-    override = false;
-  }
-
   if (count === 0) {
     asideStyle.style.visibility = "hidden";
     checkAllButton.style.visibility = "hidden";
     completedButtonVisible.style.visibility = "hidden";
   } 
   else {
+    asideStyle.style.visibility = "visible";
+    checkAllButton.style.visibility = "visible";
+
     notes.forEach((note) => {
       if (note.done === true) {
         count--;
       }
     });
+    if (count < notes.length) {
+      completedButtonVisible.style.visibility = "visible";
+    }
     if (count === 1) {
       counter.textContent = "1 item left";
     }
