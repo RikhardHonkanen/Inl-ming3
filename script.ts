@@ -1,5 +1,5 @@
 class Note {
-  index: number = 0;
+  id: number = 0;
   text: string = "";
   done: boolean = false;
 }
@@ -13,7 +13,6 @@ const formText = document.querySelector("input")! as HTMLInputElement;
 const counter = document.getElementById("items-left")! as HTMLElement;
 const notes: Note[] = [];
 let noteIndex: number = 0;
-let editTextBox = document.createElement("input")! as HTMLInputElement;
 let noteText: string = formText.value;
 const asideStyle = document.querySelector("aside")! as HTMLElement;
 const checkAllButton = document.querySelector("#button")! as HTMLButtonElement;
@@ -22,28 +21,27 @@ const clearCompletedButton = document.getElementById("clearallcompleted")! as HT
 loadLocalStorage();
 function loadLocalStorage() {
   if (localStorage.length > 0) {
-    asideStyle.style.visibility = "visible";
-    checkAllButton.style.visibility = "visible";
 
     for (let i = 0; i < localStorage.length; i++) {
-      noteText = localStorage.key(i)!;
+      let textStart = localStorage.key(i)!.indexOf('$');
+      noteText = localStorage.key(i)!.substring(textStart + 1);
       let noteDone: boolean = false;
-      if (localStorage.getItem(noteText!) == "true") {
+      if (localStorage.getItem(localStorage.key(i)!) == "true") {
         noteDone = true;
       }
 
       let noteObject = new Note();
       noteObject.text = noteText;
       noteObject.done = noteDone;
-      noteObject.index = noteIndex;
+      noteObject.id = noteIndex;
       notes.push(noteObject);
 
-      createNote(noteText, noteIndex, noteDone);
+      createNote(noteObject);
       noteIndex++;
     }    
     updateCounter();
   }
-}
+};
 
 form.onsubmit = (event) => {
   event.preventDefault();
@@ -55,43 +53,43 @@ form.onsubmit = (event) => {
     let noteObject = new Note();
     noteObject.text = noteText;
     noteObject.done = false;
-    noteObject.index = noteIndex;
+    noteObject.id = noteIndex;
     notes.push(noteObject);
 
     asideStyle.style.visibility = "visible";
     checkAllButton.style.visibility = "visible";
 
-    createNote(noteText, noteIndex, false);
+    createNote(noteObject);
     noteIndex++;
     updateCounter();
   }
 };
 
-function createNote(noteText: string, noteIndex: number, noteDone: boolean) {
-  const note = noteTemplate.content.firstElementChild!.cloneNode(
+function createNote(note: Note) {
+  const noteNode = noteTemplate.content.firstElementChild!.cloneNode(
     true
   ) as HTMLElement;
 
-  note.querySelector("#todo")!.textContent = noteText;
-  note.setAttribute("id", noteIndex.toString());
+  noteNode.querySelector("#todo")!.textContent = note.text;
+  noteNode.setAttribute("id", note.id.toString());
 
-  const deleteButton = note.querySelector("button")!;
+  const deleteButton = noteNode.querySelector("button")!;
   deleteButton.onclick = (event) => {
     let toRemove = notes.findIndex(
-      (i) => i.index == parseInt(note.getAttribute("id")!)
+      (i) => i.id == parseInt(noteNode.getAttribute("id")!)
     );
     notes.splice(toRemove, 1);
-    note.remove();
+    noteNode.remove();
     updateCounter();
   };  
 
-  const checkBox = note.querySelector("#boxcheck")! as HTMLInputElement;
-  if (noteDone == true) {
+  const checkBox = noteNode.querySelector("#boxcheck")! as HTMLInputElement;
+  if (note.done == true) {
     checkBox.checked = true;
   }
   checkBox.onclick = (event) => {
     let setDoneUndone = notes.findIndex(
-      (i) => i.index == parseInt(note.getAttribute("id")!)
+      (i) => i.id == parseInt(noteNode.getAttribute("id")!)
     );
     if (checkBox.checked === true) {
       notes[setDoneUndone].done = true;
@@ -100,25 +98,29 @@ function createNote(noteText: string, noteIndex: number, noteDone: boolean) {
       notes[setDoneUndone].done = false;
     }
     updateCounter();
-  };
-
-  notesList.append(note);
+  };  
+  
+  notesList.append(noteNode);
   formText.value = "";
+  formText.focus();
 
-  note.addEventListener("dblclick", editNote);
+  noteNode.addEventListener("dblclick", editNote);
   function editNote() {
-    noteText = note.querySelector("#todo")!.textContent!;
-    noteIndex = parseInt(note.getAttribute("id")!);
-    note.replaceChildren();
+    noteText = note.text;
+    noteIndex = note.id;
+    noteNode.replaceChildren();
 
     let editForm = document.createElement("form");
     editForm.setAttribute("class", "parent");
     let div = document.createElement("div");
     div.setAttribute("class", "left-frame");
+
+    let editTextBox = document.createElement("input") as HTMLInputElement;
     editTextBox.setAttribute("type", "text");
     editTextBox.setAttribute("class", "note");
-    editTextBox.value = noteText;
-    note.appendChild(editForm);
+    editTextBox.value = note.text;
+
+    noteNode.appendChild(editForm);
     editForm.appendChild(div);
     editForm.appendChild(editTextBox);
     editTextBox.focus();
@@ -132,7 +134,7 @@ function createNote(noteText: string, noteIndex: number, noteDone: boolean) {
       newNote.querySelector("#todo")!.textContent = editTextBox.value;
       newNote.setAttribute("id", noteIndex.toString());
 
-      let noteToEdit = notes.findIndex((i) => i.index == noteIndex);
+      let noteToEdit = notes.findIndex((i) => i.id == noteIndex);
       notes[noteToEdit].text = editTextBox.value;
       notes[noteToEdit].done = false;
 
@@ -140,7 +142,7 @@ function createNote(noteText: string, noteIndex: number, noteDone: boolean) {
       const deleteButton = newNote.querySelector("button")!;
       deleteButton.onclick = (event) => {
         let toRemove = notes.findIndex(
-          (i) => i.index == parseInt(note.getAttribute("id")!)
+          (i) => i.id == note.id
         );
         notes.splice(toRemove, 1);
         newNote.remove();
@@ -150,7 +152,7 @@ function createNote(noteText: string, noteIndex: number, noteDone: boolean) {
       const checkBox = newNote.querySelector("#boxcheck")! as HTMLInputElement;
       checkBox.onclick = (event) => {
         let setDoneUndone = notes.findIndex(
-          (i) => i.index == parseInt(note.getAttribute("id")!)
+          (i) => i.id == note.id
         );
         if (checkBox.checked === true) {
           notes[setDoneUndone].done = true;
@@ -162,7 +164,7 @@ function createNote(noteText: string, noteIndex: number, noteDone: boolean) {
 
       editTextBox.removeEventListener("blur", restoreNote);
 
-      note.replaceWith(newNote);
+      noteNode.replaceWith(newNote);
       updateCounter();
     }
   }
@@ -211,9 +213,9 @@ clearCompletedButton.onclick = (event) => {
   })
   for (let i = 0; i < notesCopy.length; i++) {
     if (notesCopy[i].done == true) {
-      let node = document.getElementById(notesCopy[i].index.toString());
+      let node = document.getElementById(notesCopy[i].id.toString());
       node!.remove();
-      let toRemove = notes.findIndex(e => e.index == notesCopy[i].index);
+      let toRemove = notes.findIndex(e => e.id == notesCopy[i].id);
       notes.splice(toRemove, 1);
     }    
   }
@@ -259,6 +261,6 @@ function updateCounter() {
 function updateLocalStorage() {
   localStorage.clear();
   notes.forEach((element) => {    
-    localStorage.setItem(element.text, element.done.toString());
+    localStorage.setItem(element.id + '$' + element.text, element.done.toString());
   });
 }
