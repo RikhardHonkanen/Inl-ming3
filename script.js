@@ -17,8 +17,8 @@ var editTextBox = document.createElement("input");
 var noteText = formText.value;
 var asideStyle = document.querySelector("aside");
 var checkAllButton = document.querySelector("#button");
-var completedButtonVisible = document.getElementById("clearallcompleted");
-var override = false;
+var clearCompletedButton = document.getElementById("clearallcompleted");
+loadLocalStorage();
 function loadLocalStorage() {
     if (localStorage.length > 0) {
         asideStyle.style.visibility = "visible";
@@ -34,12 +34,12 @@ function loadLocalStorage() {
             noteObject.done = noteDone;
             noteObject.index = noteIndex;
             notes.push(noteObject);
-            noteIndex++;
             createNote(noteText, noteIndex, noteDone);
+            noteIndex++;
         }
+        updateCounter();
     }
 }
-loadLocalStorage();
 form.onsubmit = function (event) {
     event.preventDefault();
     var noteText = formText.value;
@@ -70,18 +70,6 @@ function createNote(noteText, noteIndex, noteDone) {
         note.remove();
         updateCounter();
     };
-    //Clear all "checked" notes
-    completedButtonVisible.onclick = function (event) {
-        var i = 0;
-        var toRemove = notes.findIndex(function (i) { return i.index == parseInt(note.getAttribute("id")); });
-        notes.forEach(function (element) {
-            if (element.done === true) {
-                notes.splice(toRemove, i);
-                note.remove();
-            }
-        });
-        updateCounter();
-    };
     var checkBox = note.querySelector("#boxcheck");
     if (noteDone == true) {
         checkBox.checked = true;
@@ -90,7 +78,7 @@ function createNote(noteText, noteIndex, noteDone) {
         var setDoneUndone = notes.findIndex(function (i) { return i.index == parseInt(note.getAttribute("id")); });
         if (checkBox.checked === true) {
             notes[setDoneUndone].done = true;
-            completedButtonVisible.style.visibility = "visible";
+            clearCompletedButton.style.visibility = "visible";
         }
         else {
             notes[setDoneUndone].done = false;
@@ -144,7 +132,7 @@ function createNote(noteText, noteIndex, noteDone) {
                 updateCounter();
             };
             editTextBox.removeEventListener("blur", restoreNote);
-            note.replaceChildren(newNote);
+            note.replaceWith(newNote);
             updateCounter();
         }
     }
@@ -181,31 +169,50 @@ function trueCheckBoxes() {
     }
     updateCounter();
 }
+//Clear all "checked" notes
+clearCompletedButton.onclick = function (event) {
+    var notesCopy = [];
+    notes.forEach(function (element) {
+        notesCopy.push(element);
+    });
+    var _loop_1 = function (i) {
+        if (notesCopy[i].done == true) {
+            var node = document.getElementById(notesCopy[i].index.toString());
+            node.remove();
+            var toRemove = notes.findIndex(function (e) { return e.index == notesCopy[i].index; });
+            notes.splice(toRemove, 1);
+        }
+    };
+    for (var i = 0; i < notesCopy.length; i++) {
+        _loop_1(i);
+    }
+    updateCounter();
+};
 function updateCounter() {
     var count = notes.length;
     if (count === 0) {
         asideStyle.style.visibility = "hidden";
         checkAllButton.style.visibility = "hidden";
-        completedButtonVisible.style.visibility = "hidden";
+        clearCompletedButton.style.visibility = "hidden";
     }
     else {
         asideStyle.style.visibility = "visible";
         checkAllButton.style.visibility = "visible";
-        completedButtonVisible.style.visibility = "hidden";
+        clearCompletedButton.style.visibility = "hidden";
         notes.forEach(function (note) {
             if (note.done === true) {
                 count--;
             }
         });
         if (count < notes.length) {
-            completedButtonVisible.style.visibility = "visible";
+            clearCompletedButton.style.visibility = "visible";
         }
         if (count === 1) {
             counter.textContent = "1 item left";
         }
         else if (count == notes.length) {
             counter.textContent = count + " items left";
-            completedButtonVisible.style.visibility = "hidden";
+            clearCompletedButton.style.visibility = "hidden";
         }
         else {
             counter.textContent = count + " items left";
