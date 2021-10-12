@@ -191,6 +191,7 @@ function updateCounter() {
     else {
         asideStyle.style.visibility = "visible";
         checkAllButton.style.visibility = "visible";
+        completedButtonVisible.style.visibility = "hidden";
         notes.forEach(function (note) {
             if (note.done === true) {
                 count--;
@@ -208,7 +209,6 @@ function updateCounter() {
         }
         else {
             counter.textContent = count + " items left";
-            count++;
         }
     }
     updateLocalStorage();
