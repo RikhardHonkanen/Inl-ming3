@@ -2,8 +2,9 @@ class Note {
   id: number = 0;
   text: string = "";
   done: boolean = false;
-}
+} // index heter nu id
 
+// Ändrat lite variabelnamn, behöver fortfarande städas
 const noteTemplate = document.querySelector(
   "#list-item"
 ) as HTMLTemplateElement;
@@ -20,8 +21,8 @@ const clearCompletedButton = document.getElementById("clearallcompleted")! as HT
 
 loadLocalStorage();
 function loadLocalStorage() {
-  if (localStorage.length > 0) {
-
+  // Ändrat här, så dubbletter kan läsas in
+  if (localStorage.length > 0) {    
     for (let i = 0; i < localStorage.length; i++) {
       let textStart = localStorage.key(i)!.indexOf('$');
       noteText = localStorage.key(i)!.substring(textStart + 1);
@@ -65,6 +66,7 @@ form.onsubmit = (event) => {
   }
 };
 
+// MASSA småändringar här, funktionen tar nu emot ett Note-objekt istället för 3 parametrar
 function createNote(note: Note) {
   const noteNode = noteTemplate.content.firstElementChild!.cloneNode(
     true
@@ -164,7 +166,7 @@ function createNote(note: Note) {
 
       editTextBox.removeEventListener("blur", restoreNote);
 
-      noteNode.replaceWith(newNote);
+      noteNode.replaceChildren(newNote);
       updateCounter();
     }
   }
@@ -206,6 +208,7 @@ function trueCheckBoxes() {
 }
 
 //Clear all "checked" notes
+// Fick denna att fungera, var tvungen att skapa en kopia av listan och jämföra med, blev problem att iterera över samm lista som man tog bort objekt i. Fungerade inte heller att bara säga notesCopy = notes av ngn anledning.
 clearCompletedButton.onclick = (event) => {
   let notesCopy: Note[] = [];
   notes.forEach((element) => {
@@ -258,6 +261,7 @@ function updateCounter() {
   updateLocalStorage();
 }
 
+// Id skickas med nu, rensas bort i loadLocalStorage sen
 function updateLocalStorage() {
   localStorage.clear();
   notes.forEach((element) => {    

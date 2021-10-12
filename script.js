@@ -5,7 +5,8 @@ var Note = /** @class */ (function () {
         this.done = false;
     }
     return Note;
-}());
+}()); // index heter nu id
+// Ändrat lite variabelnamn, behöver fortfarande städas
 var noteTemplate = document.querySelector("#list-item");
 var notesList = document.querySelector("main");
 var form = document.querySelector("form");
@@ -19,6 +20,7 @@ var checkAllButton = document.querySelector("#button");
 var clearCompletedButton = document.getElementById("clearallcompleted");
 loadLocalStorage();
 function loadLocalStorage() {
+    // Ändrat här, så dubbletter kan läsas in
     if (localStorage.length > 0) {
         for (var i = 0; i < localStorage.length; i++) {
             var textStart = localStorage.key(i).indexOf('$');
@@ -58,6 +60,7 @@ form.onsubmit = function (event) {
         updateCounter();
     }
 };
+// MASSA småändringar här, funktionen tar nu emot ett Note-objekt istället för 3 parametrar
 function createNote(note) {
     var noteNode = noteTemplate.content.firstElementChild.cloneNode(true);
     noteNode.querySelector("#todo").textContent = note.text;
@@ -133,7 +136,7 @@ function createNote(note) {
                 updateCounter();
             };
             editTextBox.removeEventListener("blur", restoreNote);
-            noteNode.replaceWith(newNote);
+            noteNode.replaceChildren(newNote);
             updateCounter();
         }
     }
@@ -171,6 +174,7 @@ function trueCheckBoxes() {
     updateCounter();
 }
 //Clear all "checked" notes
+// Fick denna att fungera, var tvungen att skapa en kopia av listan och jämföra med, blev problem att iterera över samm lista som man tog bort objekt i. Fungerade inte heller att bara säga notesCopy = notes av ngn anledning.
 clearCompletedButton.onclick = function (event) {
     var notesCopy = [];
     notes.forEach(function (element) {
@@ -221,6 +225,7 @@ function updateCounter() {
     }
     updateLocalStorage();
 }
+// Id skickas med nu, rensas bort i loadLocalStorage sen
 function updateLocalStorage() {
     localStorage.clear();
     notes.forEach(function (element) {
