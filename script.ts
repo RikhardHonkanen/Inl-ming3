@@ -16,11 +16,18 @@ let noteText: string = formText.value;
 loadLocalStorage();
 function loadLocalStorage() {
   if (localStorage.length > 0) {    
+    let sortingList: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
-      let textStart = localStorage.key(i)!.indexOf('$');
-      noteText = localStorage.key(i)!.substring(textStart + 1);
+      sortingList.push(localStorage.key(i)! + '$' + localStorage.getItem(localStorage.key(i)!));
+    }
+    sortingList.sort();
+
+    for (let i = 0; i < sortingList.length; i++) {
+      let textStart = sortingList[i].indexOf('$');
+      let textEnd = sortingList[i].lastIndexOf('$');
+      noteText = sortingList[i].substring(textStart + 1, textEnd);
       let noteDone: boolean = false;
-      if (localStorage.getItem(localStorage.key(i)!) == "true") {
+      if (sortingList[i].substring(textEnd + 1) == "true") {
         noteDone = true;
       }
       let noteObject = new Note();
@@ -198,10 +205,14 @@ function trueCheckBoxes() {
 
   if (completed == notes.length) {
     checkedBox.forEach((checkbox) => {
-      checkbox.checked = false;
+      checkbox.checked = false;      
     });
     notes.forEach((element) => {
       element.done = false;
+      let div = document.getElementById(element.id.toString()) as HTMLElement;
+      let todo = div.querySelector('#todo') as HTMLElement;
+      todo.style.textDecoration = 'none';
+      todo.style.opacity = '1';
     });
   } 
   else {
@@ -210,10 +221,15 @@ function trueCheckBoxes() {
     });
     notes.forEach((element) => {
       element.done = true;
+      let div = document.getElementById(element.id.toString()) as HTMLElement;
+      let todo = div.querySelector('#todo') as HTMLElement;
+      todo.style.textDecoration = 'line-through';
+      todo.style.opacity = '0.5';
     });
   }  
   updateCounter();
 }
+// TODO: Notes flyttar sig inte om man t.ex. är i "Active" vyn och färdigmarkerar
 
 // "clicked" class is added and removed in these functions so that the active tab can be highlighted in css. This to avoid loosing the border on buttons when refreshing the page 
 const showAllNotesButton = document.getElementById('show-all') as HTMLButtonElement;
@@ -337,7 +353,7 @@ function updateCounter() {
   updateLocalStorage();
 }
 
-// Id is prepended to allow duplicate notes to be stored. Removed in loadLocalStorage() 
+// Id is prepended to allow duplicate notes to be stored and to keep the order on reload. Removed in loadLocalStorage() 
 function updateLocalStorage() {
   localStorage.clear();
   notes.forEach((element) => {    
