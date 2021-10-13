@@ -2,26 +2,19 @@ class Note {
   id: number = 0;
   text: string = "";
   done: boolean = false;
-} // index heter nu id
+}
 
-// Ändrat lite variabelnamn, behöver fortfarande städas
-const noteTemplate = document.querySelector(
-  "#list-item"
-) as HTMLTemplateElement;
-const notesList = document.querySelector("main")! as HTMLElement;
-const form = document.querySelector("form")! as HTMLFormElement;
+const noteTemplate = document.querySelector("#list-item") as HTMLTemplateElement;
 const formText = document.querySelector("input")! as HTMLInputElement;
-const counter = document.getElementById("items-left")! as HTMLElement;
+const footer = document.querySelector("footer")! as HTMLElement;
+const checkAllButton = document.querySelector("#button")! as HTMLButtonElement;
+const clearCompletedButton = document.getElementById("clearallcompleted")! as HTMLButtonElement;
 const notes: Note[] = [];
 let noteIndex: number = 0;
 let noteText: string = formText.value;
-const asideStyle = document.querySelector("aside")! as HTMLElement;
-const checkAllButton = document.querySelector("#button")! as HTMLButtonElement;
-const clearCompletedButton = document.getElementById("clearallcompleted")! as HTMLButtonElement;
 
 loadLocalStorage();
 function loadLocalStorage() {
-  // Ändrat här, så dubbletter kan läsas in
   if (localStorage.length > 0) {    
     for (let i = 0; i < localStorage.length; i++) {
       let textStart = localStorage.key(i)!.indexOf('$');
@@ -30,7 +23,6 @@ function loadLocalStorage() {
       if (localStorage.getItem(localStorage.key(i)!) == "true") {
         noteDone = true;
       }
-
       let noteObject = new Note();
       noteObject.text = noteText;
       noteObject.done = noteDone;
@@ -44,9 +36,10 @@ function loadLocalStorage() {
   }
 };
 
+const form = document.querySelector("form")! as HTMLFormElement;
 form.onsubmit = (event) => {
   event.preventDefault();
-  let noteText: string = formText.value;
+  noteText = formText.value;
 
   if (noteText === "") {
     //Do nothing
@@ -57,7 +50,7 @@ form.onsubmit = (event) => {
     noteObject.id = noteIndex;
     notes.push(noteObject);
 
-    asideStyle.style.visibility = "visible";
+    footer.style.visibility = "visible";
     checkAllButton.style.visibility = "visible";
 
     createNote(noteObject);
@@ -66,7 +59,6 @@ form.onsubmit = (event) => {
   }
 };
 
-// MASSA småändringar här, funktionen tar nu emot ett Note-objekt istället för 3 parametrar
 function createNote(note: Note) {
   const noteNode = noteTemplate.content.firstElementChild!.cloneNode(
     true
@@ -86,31 +78,40 @@ function createNote(note: Note) {
   };  
 
   const checkBox = noteNode.querySelector("#boxcheck")! as HTMLInputElement;
+  const todo = noteNode.querySelector("#todo") as HTMLElement;
+  // This check is for when objects are passed in from loadLocalStorage()
   if (note.done == true) {
     checkBox.checked = true;
+    todo.style.textDecoration = 'line-through';
+    todo.style.opacity = '0.5';
   }
+
   checkBox.onclick = (event) => {
     let setDoneUndone = notes.findIndex(
       (i) => i.id == parseInt(noteNode.getAttribute("id")!)
     );
     if (checkBox.checked === true) {
       notes[setDoneUndone].done = true;
-      clearCompletedButton.style.visibility = "visible";
-    } else {
+      todo.style.textDecoration = 'line-through';
+      todo.style.opacity = '0.5';
+    } 
+    else {
       notes[setDoneUndone].done = false;
+      todo.style.textDecoration = 'none';
+      todo.style.opacity = '1';
     }
     updateCounter();
   };  
   
+  const notesList = document.querySelector("main")! as HTMLElement;
   notesList.append(noteNode);
   formText.value = "";
   formText.focus();
 
   noteNode.addEventListener("dblclick", editNote);
   function editNote() {
-    noteText = note.text;
-    noteIndex = note.id;
-    noteNode.replaceChildren();
+    // Remove event listener to prevent crash if double clicked again. Added back at the end of function.
+    noteNode.removeEventListener("dblclick", editNote);
 
     let editForm = document.createElement("form");
     editForm.setAttribute("class", "parent");
@@ -122,7 +123,7 @@ function createNote(note: Note) {
     editTextBox.setAttribute("class", "note");
     editTextBox.value = note.text;
 
-    noteNode.appendChild(editForm);
+    noteNode.replaceChildren(editForm);
     editForm.appendChild(div);
     editForm.appendChild(editTextBox);
     editTextBox.focus();
@@ -130,17 +131,14 @@ function createNote(note: Note) {
     editTextBox.addEventListener("blur", restoreNote);
 
     function restoreNote() {
-      const newNote = noteTemplate.content.firstElementChild!.cloneNode(
-        true
-      ) as HTMLElement;
+      const newNote = noteTemplate.content.firstElementChild!.cloneNode(true) as HTMLElement;
       newNote.querySelector("#todo")!.textContent = editTextBox.value;
       newNote.setAttribute("id", noteIndex.toString());
+      
+      let noteToEdit = notes.findIndex((i) => i.id == note.id);      
+      notes[noteToEdit].text = editTextBox.value;        
 
-      let noteToEdit = notes.findIndex((i) => i.id == noteIndex);
-      notes[noteToEdit].text = editTextBox.value;
-      notes[noteToEdit].done = false;
-
-      // Some duplicate code for controls in here, did not seem to work well just looping back to createNote
+      // Some duplicate code for controls in here, looping back to createNote makes notes "jump around"
       const deleteButton = newNote.querySelector("button")!;
       deleteButton.onclick = (event) => {
         let toRemove = notes.findIndex(
@@ -151,23 +149,37 @@ function createNote(note: Note) {
         updateCounter();
       };
 
-      const checkBox = newNote.querySelector("#boxcheck")! as HTMLInputElement;
+      const todo = newNote.querySelector("#todo") as HTMLElement;
+      const checkBox = newNote.querySelector("#boxcheck")! as HTMLInputElement;      
+      if (note.done) {
+        checkBox.checked = true;
+        todo.style.textDecoration = 'line-through';
+        todo.style.opacity = '0.5';
+      }     
       checkBox.onclick = (event) => {
         let setDoneUndone = notes.findIndex(
           (i) => i.id == note.id
         );
         if (checkBox.checked === true) {
           notes[setDoneUndone].done = true;
-        } else {
+          todo.style.textDecoration = 'line-through';
+          todo.style.opacity = '0.5';
+        } 
+        else {
           notes[setDoneUndone].done = false;
+          todo.style.textDecoration = 'none';
+          todo.style.opacity = '1';
         }
         updateCounter();
       };
-
+  
+      // Event listener removed to prevent conflicts between it and "onsubmit". Gets re-added when user edits a note.
       editTextBox.removeEventListener("blur", restoreNote);
-
+  
       noteNode.replaceChildren(newNote);
-      updateCounter();
+      noteNode.addEventListener("dblclick", editNote);
+  
+      updateCounter();      
     }
   }
 }
@@ -176,39 +188,100 @@ checkAllButton.addEventListener("click", trueCheckBoxes);
 function trueCheckBoxes() {
   let checkedBox = <HTMLInputElement[]>(
     (<any>document.querySelectorAll("input[type=checkbox]"))
-  );
-  if (notes.length === 0) {
-    // Do nothing
+  );  
+  let completed = 0;
+  notes.forEach((element) => {
+    if (element.done == true) {
+      completed++;
+    }
+  });
+
+  if (completed == notes.length) {
+    checkedBox.forEach((checkbox) => {
+      checkbox.checked = false;
+    });
+    notes.forEach((element) => {
+      element.done = false;
+    });
   } 
   else {
-    let completed = 0;
-    notes.forEach((element) => {
-      if (element.done == true) {
-        completed++;
-      }
+    checkedBox.forEach((checkbox) => {
+      checkbox.checked = true;
     });
-    if (completed == notes.length) {
-      checkedBox.forEach((checkbox) => {
-        checkbox.checked = false;
-      });
-      notes.forEach((element) => {
-        element.done = false;
-      });
-    } 
-    else {
-      checkedBox.forEach((checkbox) => {
-        checkbox.checked = true;
-      });
-      notes.forEach((element) => {
-        element.done = true;
-      });
-    }
-  }
+    notes.forEach((element) => {
+      element.done = true;
+    });
+  }  
   updateCounter();
 }
 
-//Clear all "checked" notes
-// Fick denna att fungera, var tvungen att skapa en kopia av listan och jämföra med, blev problem att iterera över samm lista som man tog bort objekt i. Fungerade inte heller att bara säga notesCopy = notes av ngn anledning.
+// "clicked" class is added and removed in these functions so that the active tab can be highlighted in css. This to avoid loosing the border on buttons when refreshing the page 
+const showAllNotesButton = document.getElementById('show-all') as HTMLButtonElement;
+showAllNotesButton.addEventListener('click', showAllNotes);
+function showAllNotes() {
+  showActiveNotesButton.removeAttribute("class");
+  showCompletedNotesButton.removeAttribute("class");
+  showAllNotesButton.setAttribute("class", "clicked");
+  window.location.hash = "";
+  notes.forEach((element) => {
+    let div = document.getElementById(element.id.toString()) as HTMLElement;
+    div.style.display = 'block';
+  })  
+}
+
+const showActiveNotesButton = document.getElementById('show-active') as HTMLButtonElement;
+showActiveNotesButton.addEventListener('click', showActiveNotes);
+function showActiveNotes() {
+  showAllNotesButton.removeAttribute("class");
+  showCompletedNotesButton.removeAttribute("class");
+  showActiveNotesButton.setAttribute("class", "clicked");
+  window.location.hash = "active";
+  notes.forEach((element) => {
+    let div = document.getElementById(element.id.toString()) as HTMLElement;
+    if (element.done == true) {
+      div.style.display = 'none';
+    }
+    else {
+      div.style.display = 'block';
+    }
+  })  
+}
+
+const showCompletedNotesButton = document.getElementById('show-completed') as HTMLButtonElement;
+showCompletedNotesButton.addEventListener('click', showCompletedNotes) 
+function showCompletedNotes() {
+  showActiveNotesButton.removeAttribute("class");
+  showAllNotesButton.removeAttribute("class");
+  showCompletedNotesButton.setAttribute("class", "clicked");
+  window.location.hash = "completed";
+  notes.forEach((element) => {
+    let div = document.getElementById(element.id.toString()) as HTMLElement;
+    if (element.done == true) {
+      div.style.display = 'block';
+    }
+    else {
+      div.style.display = 'none';
+    }
+  })
+}
+
+window.addEventListener('pageshow', checkHash);
+window.addEventListener('hashchange', checkHash);
+
+function checkHash() {
+  let hash = window.location.hash;
+  if (hash === "") {
+    showAllNotes();
+  }
+  else if (hash === "#active") {
+    showActiveNotes();    
+  }
+  else if (hash === "#completed") {
+    showCompletedNotes();
+  }
+}
+
+// Function iterates over a copy of notes array, since removing values in the original changes indexes
 clearCompletedButton.onclick = (event) => {
   let notesCopy: Note[] = [];
   notes.forEach((element) => {
@@ -225,16 +298,18 @@ clearCompletedButton.onclick = (event) => {
   updateCounter();
 }
 
+// Logic improvements possible here?
 function updateCounter() {
+  const counter = document.getElementById("items-left")! as HTMLElement;
   let count = notes.length; 
   
   if (count === 0) {
-    asideStyle.style.visibility = "hidden";
+    footer.style.visibility = "hidden";
     checkAllButton.style.visibility = "hidden";
     clearCompletedButton.style.visibility = "hidden";
   } 
   else {
-    asideStyle.style.visibility = "visible";
+    footer.style.visibility = "visible";
     checkAllButton.style.visibility = "visible";
     clearCompletedButton.style.visibility = "hidden";
 
@@ -247,6 +322,7 @@ function updateCounter() {
     if (count < notes.length) {
       clearCompletedButton.style.visibility = "visible";
     }
+    
     if (count === 1) {
       counter.textContent = "1 item left";
     }
@@ -261,7 +337,7 @@ function updateCounter() {
   updateLocalStorage();
 }
 
-// Id skickas med nu, rensas bort i loadLocalStorage sen
+// Id is prepended to allow duplicate notes to be stored. Removed in loadLocalStorage() 
 function updateLocalStorage() {
   localStorage.clear();
   notes.forEach((element) => {    

@@ -33,28 +33,28 @@
       <div class="left-frame">
         <label class="container">
           <input type="checkbox" id="boxcheck"></input>
-          <span class="note" id="todo"></span>
           <span id="checkbox"></span>
         </label>
+        <span class="note" id="todo"></span>
       </div> <!-- close left-frame div -->
     </div> <!--  closes "parent div" -->
   </template>
     
-  <aside>
+  <footer>
     <span id="items-left"></span>
     <div class="filters">
-      <button>All</button>
-      <button>Active</button>
-      <button>Completed</button>
+        <button id="show-all">All</button>
+        <button id="show-active">Active</button>
+        <button id="show-completed">Completed</button>
     </div>
       <button id="clearallcompleted">Clear Completed</button>
-  </aside>
+  </footer>
 
-  <footer>
+  <div class="legal">
     <p>Double-click to edit a todo</p>
     <p>Written by <a href="https://github.com/addyosmani">Addy Osmani</a></p>
     <p>Part of <a href="https://todomvc.com/">TodoMVC</a></p>
-  </footer>
+  </div>
 </body>
 
 </html>

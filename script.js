@@ -5,22 +5,17 @@ var Note = /** @class */ (function () {
         this.done = false;
     }
     return Note;
-}()); // index heter nu id
-// Ändrat lite variabelnamn, behöver fortfarande städas
+}());
 var noteTemplate = document.querySelector("#list-item");
-var notesList = document.querySelector("main");
-var form = document.querySelector("form");
 var formText = document.querySelector("input");
-var counter = document.getElementById("items-left");
+var footer = document.querySelector("footer");
+var checkAllButton = document.querySelector("#button");
+var clearCompletedButton = document.getElementById("clearallcompleted");
 var notes = [];
 var noteIndex = 0;
 var noteText = formText.value;
-var asideStyle = document.querySelector("aside");
-var checkAllButton = document.querySelector("#button");
-var clearCompletedButton = document.getElementById("clearallcompleted");
 loadLocalStorage();
 function loadLocalStorage() {
-    // Ändrat här, så dubbletter kan läsas in
     if (localStorage.length > 0) {
         for (var i = 0; i < localStorage.length; i++) {
             var textStart = localStorage.key(i).indexOf('$');
@@ -41,9 +36,10 @@ function loadLocalStorage() {
     }
 }
 ;
+var form = document.querySelector("form");
 form.onsubmit = function (event) {
     event.preventDefault();
-    var noteText = formText.value;
+    noteText = formText.value;
     if (noteText === "") {
         //Do nothing
     }
@@ -53,14 +49,13 @@ form.onsubmit = function (event) {
         noteObject.done = false;
         noteObject.id = noteIndex;
         notes.push(noteObject);
-        asideStyle.style.visibility = "visible";
+        footer.style.visibility = "visible";
         checkAllButton.style.visibility = "visible";
         createNote(noteObject);
         noteIndex++;
         updateCounter();
     }
 };
-// MASSA småändringar här, funktionen tar nu emot ett Note-objekt istället för 3 parametrar
 function createNote(note) {
     var noteNode = noteTemplate.content.firstElementChild.cloneNode(true);
     noteNode.querySelector("#todo").textContent = note.text;
@@ -73,28 +68,35 @@ function createNote(note) {
         updateCounter();
     };
     var checkBox = noteNode.querySelector("#boxcheck");
+    var todo = noteNode.querySelector("#todo");
+    // This check is for when objects are passed in from loadLocalStorage()
     if (note.done == true) {
         checkBox.checked = true;
+        todo.style.textDecoration = 'line-through';
+        todo.style.opacity = '0.5';
     }
     checkBox.onclick = function (event) {
         var setDoneUndone = notes.findIndex(function (i) { return i.id == parseInt(noteNode.getAttribute("id")); });
         if (checkBox.checked === true) {
             notes[setDoneUndone].done = true;
-            clearCompletedButton.style.visibility = "visible";
+            todo.style.textDecoration = 'line-through';
+            todo.style.opacity = '0.5';
         }
         else {
             notes[setDoneUndone].done = false;
+            todo.style.textDecoration = 'none';
+            todo.style.opacity = '1';
         }
         updateCounter();
     };
+    var notesList = document.querySelector("main");
     notesList.append(noteNode);
     formText.value = "";
     formText.focus();
     noteNode.addEventListener("dblclick", editNote);
     function editNote() {
-        noteText = note.text;
-        noteIndex = note.id;
-        noteNode.replaceChildren();
+        // Remove event listener to prevent crash if double clicked again. Added back at the end of function.
+        noteNode.removeEventListener("dblclick", editNote);
         var editForm = document.createElement("form");
         editForm.setAttribute("class", "parent");
         var div = document.createElement("div");
@@ -103,7 +105,7 @@ function createNote(note) {
         editTextBox.setAttribute("type", "text");
         editTextBox.setAttribute("class", "note");
         editTextBox.value = note.text;
-        noteNode.appendChild(editForm);
+        noteNode.replaceChildren(editForm);
         editForm.appendChild(div);
         editForm.appendChild(editTextBox);
         editTextBox.focus();
@@ -113,10 +115,9 @@ function createNote(note) {
             var newNote = noteTemplate.content.firstElementChild.cloneNode(true);
             newNote.querySelector("#todo").textContent = editTextBox.value;
             newNote.setAttribute("id", noteIndex.toString());
-            var noteToEdit = notes.findIndex(function (i) { return i.id == noteIndex; });
+            var noteToEdit = notes.findIndex(function (i) { return i.id == note.id; });
             notes[noteToEdit].text = editTextBox.value;
-            notes[noteToEdit].done = false;
-            // Some duplicate code for controls in here, did not seem to work well just looping back to createNote
+            // Some duplicate code for controls in here, looping back to createNote makes notes "jump around"
             var deleteButton = newNote.querySelector("button");
             deleteButton.onclick = function (event) {
                 var toRemove = notes.findIndex(function (i) { return i.id == note.id; });
@@ -124,19 +125,31 @@ function createNote(note) {
                 newNote.remove();
                 updateCounter();
             };
+            var todo = newNote.querySelector("#todo");
             var checkBox = newNote.querySelector("#boxcheck");
+            if (note.done) {
+                checkBox.checked = true;
+                todo.style.textDecoration = 'line-through';
+                todo.style.opacity = '0.5';
+            }
             checkBox.onclick = function (event) {
                 var setDoneUndone = notes.findIndex(function (i) { return i.id == note.id; });
                 if (checkBox.checked === true) {
                     notes[setDoneUndone].done = true;
+                    todo.style.textDecoration = 'line-through';
+                    todo.style.opacity = '0.5';
                 }
                 else {
                     notes[setDoneUndone].done = false;
+                    todo.style.textDecoration = 'none';
+                    todo.style.opacity = '1';
                 }
                 updateCounter();
             };
+            // Event listener removed to prevent conflicts between it and "onsubmit". Gets re-added when user edits a note.
             editTextBox.removeEventListener("blur", restoreNote);
             noteNode.replaceChildren(newNote);
+            noteNode.addEventListener("dblclick", editNote);
             updateCounter();
         }
     }
@@ -144,37 +157,92 @@ function createNote(note) {
 checkAllButton.addEventListener("click", trueCheckBoxes);
 function trueCheckBoxes() {
     var checkedBox = document.querySelectorAll("input[type=checkbox]");
-    if (notes.length === 0) {
-        // Do nothing
+    var completed = 0;
+    notes.forEach(function (element) {
+        if (element.done == true) {
+            completed++;
+        }
+    });
+    if (completed == notes.length) {
+        checkedBox.forEach(function (checkbox) {
+            checkbox.checked = false;
+        });
+        notes.forEach(function (element) {
+            element.done = false;
+        });
     }
     else {
-        var completed_1 = 0;
-        notes.forEach(function (element) {
-            if (element.done == true) {
-                completed_1++;
-            }
+        checkedBox.forEach(function (checkbox) {
+            checkbox.checked = true;
         });
-        if (completed_1 == notes.length) {
-            checkedBox.forEach(function (checkbox) {
-                checkbox.checked = false;
-            });
-            notes.forEach(function (element) {
-                element.done = false;
-            });
-        }
-        else {
-            checkedBox.forEach(function (checkbox) {
-                checkbox.checked = true;
-            });
-            notes.forEach(function (element) {
-                element.done = true;
-            });
-        }
+        notes.forEach(function (element) {
+            element.done = true;
+        });
     }
     updateCounter();
 }
-//Clear all "checked" notes
-// Fick denna att fungera, var tvungen att skapa en kopia av listan och jämföra med, blev problem att iterera över samm lista som man tog bort objekt i. Fungerade inte heller att bara säga notesCopy = notes av ngn anledning.
+// "clicked" class is added and removed in these functions so that the active tab can be highlighted in css. This to avoid loosing the border on buttons when refreshing the page 
+var showAllNotesButton = document.getElementById('show-all');
+showAllNotesButton.addEventListener('click', showAllNotes);
+function showAllNotes() {
+    showActiveNotesButton.removeAttribute("class");
+    showCompletedNotesButton.removeAttribute("class");
+    showAllNotesButton.setAttribute("class", "clicked");
+    window.location.hash = "";
+    notes.forEach(function (element) {
+        var div = document.getElementById(element.id.toString());
+        div.style.display = 'block';
+    });
+}
+var showActiveNotesButton = document.getElementById('show-active');
+showActiveNotesButton.addEventListener('click', showActiveNotes);
+function showActiveNotes() {
+    showAllNotesButton.removeAttribute("class");
+    showCompletedNotesButton.removeAttribute("class");
+    showActiveNotesButton.setAttribute("class", "clicked");
+    window.location.hash = "active";
+    notes.forEach(function (element) {
+        var div = document.getElementById(element.id.toString());
+        if (element.done == true) {
+            div.style.display = 'none';
+        }
+        else {
+            div.style.display = 'block';
+        }
+    });
+}
+var showCompletedNotesButton = document.getElementById('show-completed');
+showCompletedNotesButton.addEventListener('click', showCompletedNotes);
+function showCompletedNotes() {
+    showActiveNotesButton.removeAttribute("class");
+    showAllNotesButton.removeAttribute("class");
+    showCompletedNotesButton.setAttribute("class", "clicked");
+    window.location.hash = "completed";
+    notes.forEach(function (element) {
+        var div = document.getElementById(element.id.toString());
+        if (element.done == true) {
+            div.style.display = 'block';
+        }
+        else {
+            div.style.display = 'none';
+        }
+    });
+}
+window.addEventListener('pageshow', checkHash);
+window.addEventListener('hashchange', checkHash);
+function checkHash() {
+    var hash = window.location.hash;
+    if (hash === "") {
+        showAllNotes();
+    }
+    else if (hash === "#active") {
+        showActiveNotes();
+    }
+    else if (hash === "#completed") {
+        showCompletedNotes();
+    }
+}
+// Function iterates over a copy of notes array, since removing values in the original changes indexes
 clearCompletedButton.onclick = function (event) {
     var notesCopy = [];
     notes.forEach(function (element) {
@@ -193,15 +261,17 @@ clearCompletedButton.onclick = function (event) {
     }
     updateCounter();
 };
+// Logic improvements possible here?
 function updateCounter() {
+    var counter = document.getElementById("items-left");
     var count = notes.length;
     if (count === 0) {
-        asideStyle.style.visibility = "hidden";
+        footer.style.visibility = "hidden";
         checkAllButton.style.visibility = "hidden";
         clearCompletedButton.style.visibility = "hidden";
     }
     else {
-        asideStyle.style.visibility = "visible";
+        footer.style.visibility = "visible";
         checkAllButton.style.visibility = "visible";
         clearCompletedButton.style.visibility = "hidden";
         notes.forEach(function (note) {
@@ -225,7 +295,7 @@ function updateCounter() {
     }
     updateLocalStorage();
 }
-// Id skickas med nu, rensas bort i loadLocalStorage sen
+// Id is prepended to allow duplicate notes to be stored. Removed in loadLocalStorage() 
 function updateLocalStorage() {
     localStorage.clear();
     notes.forEach(function (element) {

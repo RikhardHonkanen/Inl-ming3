@@ -30,6 +30,7 @@ main {
 
 .parent {
     display: flex;
+    align-items: center;
     box-shadow: 0 2px 4px 0 rgb(0 0 0 / 30%), 0 25px 50px 0 rgb(0 0 0 / 10%);
     width: inherit;
     background-color: white;
@@ -93,13 +94,6 @@ button:hover {
     box-shadow: 0 2px 4px 0 rgb(0 0 0 / 30%), 0 25px 50px 0 rgb(0 0 0 / 10%);
 }
 
-/* Container for the checkbox */
-.container {
-    position: relative;
-    cursor: pointer;
-    padding: 10px;
-  }
-  
 /* Hide the browser's default checkbox */
 .container input {
     position: absolute;
@@ -135,7 +129,7 @@ button:hover {
 /* Create a custom checkbox */
   #checkbox {
     position: absolute;
-    inset: 1px 0 7px 7px;
+    inset: 7px 0 7px 18px;
     margin: auto 0;
     height: 25px;
     width: 25px;
@@ -148,7 +142,7 @@ button:hover {
     cursor: pointer;
   }
 
-input[type="checkbox"]:checked + span {
+.line-through {
     text-decoration: line-through;
     color: #d9d9d9;
 }
@@ -172,7 +166,7 @@ input[type="checkbox"]:checked + span {
     visibility: visible;
 }
 
-aside {
+footer {
     display: flex;
     box-shadow: 0 2px 4px 0 rgb(0 0 0 / 30%), 0 25px 50px 0 rgb(0 0 0 / 10%);
     padding: 0.6rem;
@@ -181,7 +175,7 @@ aside {
     visibility: hidden;
 }
 
-aside span {
+footer span {
     margin-left: 10px;
     padding: 4px;
     min-width: 80px;
@@ -192,7 +186,7 @@ aside span {
     position: relative;
 }
 
-aside button {
+footer button {
     margin-left: 1rem;
     background-color: white;
     border: none;
@@ -202,15 +196,16 @@ aside button {
     border: 1px solid rgba(0, 0, 0, 0);
 }
 
-aside button:hover {
+footer button:hover {
     border: 1px solid rgba(175, 47, 47, 0.15);
     border-radius: 3px;
 }
 
-aside button:focus {
+.clicked {
     border: 1px solid rgba(175, 47, 47, 0.15);
     border-radius: 3px;
 }
+
 #clearallcompleted {
     margin-left: 53px;
     visibility: hidden;
@@ -225,7 +220,7 @@ aside button:focus {
     cursor: pointer;
 }
 
-footer {
+.legal {
     text-align: center;
     color: #bfbfbf;
     margin-top: 50px;
@@ -233,11 +228,11 @@ footer {
     font-size: 12px;
 }
 
-footer a {
+.legal a {
     text-decoration: none;
     color: #bfbfbf;
 }
 
-footer a:hover {
+.legal a:hover {
     text-decoration: underline;
 }
