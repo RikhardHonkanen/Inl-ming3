@@ -9,11 +9,9 @@ body {
     margin: 0 auto;
     margin-top: 5px;
     width: 550px;
-    /* min-width: 230px; */
     font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background-color: #f5f5f5;
     color: #777;
-    background-color: yellow;
 }
 
 header h1 {
@@ -22,45 +20,29 @@ header h1 {
     font-size: 100px;
     font-weight: normal;
 }
-
-main {
-    /* width: 550px; */
-    border: 1px solid grey;
-    background-color: black;
-}
-
 .parent {
     display: flex;
-    /* align-items: center; */
     box-shadow: 0 2px 4px 0 rgb(0 0 0 / 30%), 0 25px 50px 0 rgb(0 0 0 / 10%);
-    width: inherit;
     background-color: white;
     position: relative;
-
-    background-color: yellow;
 }
 
 .left-frame {
     padding: 10px;
     width: 4rem;
-    /* max-width: 4rem; */
-    background-color: blue;
 }
 
 .searchbar {
     flex: 1;
     border: none;
-    border-color: none;
     font-size: 24px;
-
-    background-color: purple;
 }
 
 .searchbar::placeholder {
-    text-indent: 10px;
     font-size: 24px;
     font-style: italic;
     color: rgba(128, 128, 128, 0.459);
+    text-indent: -2px;
 }
 
 .searchbar:focus{
@@ -83,34 +65,24 @@ button:hover {
 
 /* The note layout*/
 #todo {
-    flex: 1;
-    /* display: inline-block; */
+    flex: 1;    
     padding: 10px;
-    /* margin-left: 0px;  */
-    /* padding-left: 2px; */
-    /* padding: 1px; */
-    /* text-indent: -12px; */
+    margin-left: -15px; 
     word-break: break-all;
     font-size: 24px;
-    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 30%), 0 25px 50px 0 rgb(0 0 0 / 10%);
     border: 1px solid transparent;
-
-    background-color: green;
 }
 
 #todo:focus {
-    /* flex: 1; */
-    /* margin-left: 35px; */
-    /* padding: 10px; */
-    /* text-indent: -15px; */
-    width: 485px;
+    width: 501px;
     outline: none;
     border: 1px solid grey;
 }
 
+/* Styling for checkboxes */
 /* Hide the browser's default checkbox */
 .container input {
-    position: absolute;
+    /* position: absolute; */
     opacity: 0;
 }
   
@@ -147,7 +119,7 @@ button:hover {
     margin: auto 0;
     height: 25px;
     width: 25px;
-    text-align: center;
+    /* text-align: center; */
     border-radius: 50%;
     border: 1px solid #ddd;
     appearance: none;
@@ -173,6 +145,7 @@ button:hover {
     opacity: 50%; 
     font-size: 15px;
     margin-bottom: 10px;
+    /* Places the checkbox "above" the text so the note doesnt block it */
     z-index: 1;
 }
 
@@ -192,7 +165,7 @@ footer {
 footer span {
     margin-left: 10px;
     padding: 4px;
-    /* min-width: 80px; */
+    min-width: 80px;
     width: 85px;
 }
 
@@ -207,7 +180,7 @@ footer button {
     border: none;
     padding: 3px;
     color: #777;
-    /* Empty border to avoid shifting on hover */
+    /* Empty border to avoid movement on hover */
     border: 1px solid rgba(0, 0, 0, 0);
 }
 
@@ -216,6 +189,7 @@ footer button:hover {
     border-radius: 3px;
 }
 
+/* Instead of :focus. Appiles the class via javascript to the button when clicked */
 .clicked {
     border: 1px solid rgba(175, 47, 47, 0.15);
     border-radius: 3px;
@@ -251,3 +225,50 @@ footer button:hover {
 .legal a:hover {
     text-decoration: underline;
 }
+
+@media screen and (max-width: 550px) {
+
+    body {
+        display: block;
+        margin: 0 auto;
+        width: 356px;
+    }
+    .parent {
+        width: 356px;
+    }
+
+    .searchbar::placeholder {
+        content: "hej";
+    }
+
+    footer {
+        justify-content: center;
+        align-items: center;
+        width: 356px;
+    }
+    
+    /* " items left " */
+    footer span {
+        text-align: center;
+        margin-left: 0px;
+        padding: 0px;
+        min-width: 25px;
+        width: 0px;
+    }
+    
+    /* All, Active, Completed */
+    .filters {
+        display: flex;
+        flex-direction: column;
+    }
+        
+    #clearallcompleted {
+        margin-right: 0px;
+        padding: 0px;
+        max-width: 80px;
+    }
+    
+    #clearallcompleted:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
