@@ -94,7 +94,7 @@ namespace EdgeDriverTest1
         [TestMethod] 
         public void CheckURL()
         {
-            browser.Url = "https://rikhardhonkanen.github.io/Inl-ming3/#active";
+            browser.Url = "https://rikhardhonkanen.github.io/Inl-ming3/";
 
             var searchbar = browser.FindElement(By.ClassName("searchbar"));
             searchbar.SendKeys("Eggs");
