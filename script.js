@@ -55,10 +55,9 @@ form.onsubmit = function (event) {
         noteObject.done = false;
         noteObject.id = noteIndex;
         notes.push(noteObject);
-        footer.style.visibility = "visible";
-        checkAllButton.style.visibility = "visible";
         createNote(noteObject);
         noteIndex++;
+        checkHash();
         updateCounter();
     }
 };
@@ -66,6 +65,10 @@ function createNote(note) {
     var noteNode = noteTemplate.content.firstElementChild.cloneNode(true);
     noteNode.querySelector("#todo").textContent = note.text;
     noteNode.setAttribute("id", note.id.toString());
+    var notesList = document.querySelector("main");
+    notesList.append(noteNode);
+    formText.value = "";
+    // formText.focus();
     var deleteButton = noteNode.querySelector("button");
     deleteButton.onclick = function (event) {
         var toRemove = notes.findIndex(function (i) { return i.id == parseInt(noteNode.getAttribute("id")); });
@@ -93,12 +96,9 @@ function createNote(note) {
             todo.style.textDecoration = 'none';
             todo.style.opacity = '1';
         }
+        checkHash();
         updateCounter();
     };
-    var notesList = document.querySelector("main");
-    notesList.append(noteNode);
-    formText.value = "";
-    formText.focus();
     noteNode.addEventListener("dblclick", editNote);
     function editNote() {
         // Remove event listener to prevent crash if double clicked again. Added back at the end of function.
@@ -109,18 +109,19 @@ function createNote(note) {
         div.setAttribute("class", "left-frame");
         var editTextBox = document.createElement("input");
         editTextBox.setAttribute("type", "text");
-        editTextBox.setAttribute("class", "note");
+        // editTextBox.setAttribute("class", "note");
+        editTextBox.setAttribute("id", "todo");
         editTextBox.value = note.text;
-        noteNode.replaceChildren(editForm);
         editForm.appendChild(div);
         editForm.appendChild(editTextBox);
+        noteNode.replaceChildren(editForm);
         editTextBox.focus();
-        editForm.addEventListener("submit", restoreNote);
-        editTextBox.addEventListener("blur", restoreNote);
-        function restoreNote() {
+        editForm.addEventListener("submit", overwriteNote);
+        editTextBox.addEventListener("blur", overwriteNote);
+        function overwriteNote() {
             var newNote = noteTemplate.content.firstElementChild.cloneNode(true);
             newNote.querySelector("#todo").textContent = editTextBox.value;
-            newNote.setAttribute("id", noteIndex.toString());
+            newNote.setAttribute("id", note.id.toString());
             var noteToEdit = notes.findIndex(function (i) { return i.id == note.id; });
             notes[noteToEdit].text = editTextBox.value;
             // Some duplicate code for controls in here, looping back to createNote makes notes "jump around"
@@ -150,11 +151,14 @@ function createNote(note) {
                     todo.style.textDecoration = 'none';
                     todo.style.opacity = '1';
                 }
+                checkHash();
                 updateCounter();
             };
             // Event listener removed to prevent conflicts between it and "onsubmit". Gets re-added when user edits a note.
-            editTextBox.removeEventListener("blur", restoreNote);
+            editTextBox.removeEventListener("blur", overwriteNote);
             noteNode.replaceChildren(newNote);
+            var parentDiv = noteNode.querySelector('.parent');
+            parentDiv.style.width = '100%';
             noteNode.addEventListener("dblclick", editNote);
             updateCounter();
         }
@@ -193,6 +197,7 @@ function trueCheckBoxes() {
             todo.style.opacity = '0.5';
         });
     }
+    checkHash();
     updateCounter();
 }
 // TODO: Notes flyttar sig inte om man t.ex. är i "Active" vyn och färdigmarkerar
@@ -206,7 +211,7 @@ function showAllNotes() {
     window.location.hash = "";
     notes.forEach(function (element) {
         var div = document.getElementById(element.id.toString());
-        div.style.display = 'block';
+        div.style.display = 'flex';
     });
 }
 var showActiveNotesButton = document.getElementById('show-active');
@@ -222,7 +227,7 @@ function showActiveNotes() {
             div.style.display = 'none';
         }
         else {
-            div.style.display = 'block';
+            div.style.display = 'flex';
         }
     });
 }
@@ -236,7 +241,7 @@ function showCompletedNotes() {
     notes.forEach(function (element) {
         var div = document.getElementById(element.id.toString());
         if (element.done == true) {
-            div.style.display = 'block';
+            div.style.display = 'flex';
         }
         else {
             div.style.display = 'none';

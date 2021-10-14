@@ -57,11 +57,9 @@ form.onsubmit = (event) => {
     noteObject.id = noteIndex;
     notes.push(noteObject);
 
-    footer.style.visibility = "visible";
-    checkAllButton.style.visibility = "visible";
-
     createNote(noteObject);
     noteIndex++;
+    checkHash();
     updateCounter();
   }
 };
@@ -72,7 +70,12 @@ function createNote(note: Note) {
   ) as HTMLElement;
 
   noteNode.querySelector("#todo")!.textContent = note.text;
-  noteNode.setAttribute("id", note.id.toString());
+  noteNode.setAttribute("id", note.id.toString()); 
+  
+  const notesList = document.querySelector("main")! as HTMLElement;
+  notesList.append(noteNode);
+  formText.value = "";
+  // formText.focus();
 
   const deleteButton = noteNode.querySelector("button")!;
   deleteButton.onclick = (event) => {
@@ -106,15 +109,11 @@ function createNote(note: Note) {
       notes[setDoneUndone].done = false;
       todo.style.textDecoration = 'none';
       todo.style.opacity = '1';
-    }
+    }      
+    checkHash();
     updateCounter();
-  };  
+  };    
   
-  const notesList = document.querySelector("main")! as HTMLElement;
-  notesList.append(noteNode);
-  formText.value = "";
-  formText.focus();
-
   noteNode.addEventListener("dblclick", editNote);
   function editNote() {
     // Remove event listener to prevent crash if double clicked again. Added back at the end of function.
@@ -127,20 +126,24 @@ function createNote(note: Note) {
 
     let editTextBox = document.createElement("input") as HTMLInputElement;
     editTextBox.setAttribute("type", "text");
-    editTextBox.setAttribute("class", "note");
+    // editTextBox.setAttribute("class", "note");
+    editTextBox.setAttribute("id", "todo");
     editTextBox.value = note.text;
 
-    noteNode.replaceChildren(editForm);
     editForm.appendChild(div);
     editForm.appendChild(editTextBox);
-    editTextBox.focus();
-    editForm.addEventListener("submit", restoreNote);
-    editTextBox.addEventListener("blur", restoreNote);
 
-    function restoreNote() {
+    noteNode.replaceChildren(editForm);
+
+    editTextBox.focus();
+
+    editForm.addEventListener("submit", overwriteNote);
+    editTextBox.addEventListener("blur", overwriteNote);
+
+    function overwriteNote() {
       const newNote = noteTemplate.content.firstElementChild!.cloneNode(true) as HTMLElement;
       newNote.querySelector("#todo")!.textContent = editTextBox.value;
-      newNote.setAttribute("id", noteIndex.toString());
+      newNote.setAttribute("id", note.id.toString());
       
       let noteToEdit = notes.findIndex((i) => i.id == note.id);      
       notes[noteToEdit].text = editTextBox.value;        
@@ -177,16 +180,19 @@ function createNote(note: Note) {
           todo.style.textDecoration = 'none';
           todo.style.opacity = '1';
         }
+        checkHash();
         updateCounter();
       };
   
       // Event listener removed to prevent conflicts between it and "onsubmit". Gets re-added when user edits a note.
-      editTextBox.removeEventListener("blur", restoreNote);
+      editTextBox.removeEventListener("blur", overwriteNote);
   
       noteNode.replaceChildren(newNote);
+      let parentDiv = noteNode.querySelector('.parent') as HTMLElement;
+      parentDiv.style.width = '100%'
       noteNode.addEventListener("dblclick", editNote);
   
-      updateCounter();      
+      updateCounter();
     }
   }
 }
@@ -227,6 +233,7 @@ function trueCheckBoxes() {
       todo.style.opacity = '0.5';
     });
   }  
+  checkHash();
   updateCounter();
 }
 // TODO: Notes flyttar sig inte om man t.ex. är i "Active" vyn och färdigmarkerar
@@ -241,7 +248,7 @@ function showAllNotes() {
   window.location.hash = "";
   notes.forEach((element) => {
     let div = document.getElementById(element.id.toString()) as HTMLElement;
-    div.style.display = 'block';
+    div.style.display = 'flex';
   })  
 }
 
@@ -258,7 +265,7 @@ function showActiveNotes() {
       div.style.display = 'none';
     }
     else {
-      div.style.display = 'block';
+      div.style.display = 'flex';
     }
   })  
 }
@@ -273,7 +280,7 @@ function showCompletedNotes() {
   notes.forEach((element) => {
     let div = document.getElementById(element.id.toString()) as HTMLElement;
     if (element.done == true) {
-      div.style.display = 'block';
+      div.style.display = 'flex';
     }
     else {
       div.style.display = 'none';
