@@ -75,7 +75,6 @@ function createNote(note: Note) {
   const notesList = document.querySelector("main")! as HTMLElement;
   notesList.append(noteNode);
   formText.value = "";
-  // formText.focus();
 
   const deleteButton = noteNode.querySelector("button")!;
   deleteButton.onclick = (event) => {
@@ -236,7 +235,6 @@ function trueCheckBoxes() {
   checkHash();
   updateCounter();
 }
-// TODO: Notes flyttar sig inte om man t.ex. är i "Active" vyn och färdigmarkerar
 
 // "clicked" class is added and removed in these functions so that the active tab can be highlighted in css. This to avoid loosing the border on buttons when refreshing the page 
 const showAllNotesButton = document.getElementById('show-all') as HTMLButtonElement;
@@ -321,7 +319,6 @@ clearCompletedButton.onclick = (event) => {
   updateCounter();
 }
 
-// Logic improvements possible here?
 function updateCounter() {
   const counter = document.getElementById("items-left")! as HTMLElement;
   let count = notes.length; 
