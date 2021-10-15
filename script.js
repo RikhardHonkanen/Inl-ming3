@@ -109,7 +109,7 @@ function createNote(note) {
         div.setAttribute("class", "left-frame");
         var editTextBox = document.createElement("input");
         editTextBox.setAttribute("type", "text");
-        // editTextBox.setAttribute("class", "note");
+        editTextBox.setAttribute("class", "note");
         editTextBox.setAttribute("id", "todo");
         editTextBox.value = note.text;
         editForm.appendChild(div);

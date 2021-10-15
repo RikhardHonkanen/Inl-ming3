@@ -126,7 +126,7 @@ function createNote(note: Note) {
 
     let editTextBox = document.createElement("input") as HTMLInputElement;
     editTextBox.setAttribute("type", "text");
-    // editTextBox.setAttribute("class", "note");
+    editTextBox.setAttribute("class", "note");
     editTextBox.setAttribute("id", "todo");
     editTextBox.value = note.text;
 
