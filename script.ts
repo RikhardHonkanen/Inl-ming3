@@ -27,7 +27,7 @@ function loadLocalStorage() {
       let textEnd = sortingList[i].lastIndexOf('$');
       noteText = sortingList[i].substring(textStart + 1, textEnd);
       let noteDone: boolean = false;
-      if (sortingList[i].substring(textEnd + 1) == "true") {
+      if (sortingList[i].substring(textEnd + 1) === "true") {
         noteDone = true;
       }
       let noteObject = new Note();
@@ -89,7 +89,7 @@ function createNote(note: Note) {
   const checkBox = noteNode.querySelector("#boxcheck")! as HTMLInputElement;
   const todo = noteNode.querySelector("#todo") as HTMLElement;
   // This check is for when objects are passed in from loadLocalStorage()
-  if (note.done == true) {
+  if (note.done === true) {
     checkBox.checked = true;
     todo.style.textDecoration = 'line-through';
     todo.style.opacity = '0.5';
@@ -118,6 +118,7 @@ function createNote(note: Note) {
     // Remove event listener to prevent crash if double clicked again. Added back at the end of function.
     noteNode.removeEventListener("dblclick", editNote);
 
+    // Creates a textbox. Extra div and attributes added to get CSS settings included
     let editForm = document.createElement("form");
     editForm.setAttribute("class", "parent");
     let div = document.createElement("div");
@@ -140,26 +141,26 @@ function createNote(note: Note) {
     editTextBox.addEventListener("blur", overwriteNote);
 
     function overwriteNote() {
-      const newNote = noteTemplate.content.firstElementChild!.cloneNode(true) as HTMLElement;
-      newNote.querySelector("#todo")!.textContent = editTextBox.value;
-      newNote.setAttribute("id", note.id.toString());
+      const newNoteNode = noteTemplate.content.firstElementChild!.cloneNode(true) as HTMLElement;
+      newNoteNode.querySelector("#todo")!.textContent = editTextBox.value;
+      newNoteNode.setAttribute("id", note.id.toString());
       
       let noteToEdit = notes.findIndex((i) => i.id == note.id);      
       notes[noteToEdit].text = editTextBox.value;        
 
       // Some duplicate code for controls in here, looping back to createNote makes notes "jump around"
-      const deleteButton = newNote.querySelector("button")!;
+      const deleteButton = newNoteNode.querySelector("button")!;
       deleteButton.onclick = (event) => {
         let toRemove = notes.findIndex(
           (i) => i.id == note.id
         );
         notes.splice(toRemove, 1);
-        newNote.remove();
+        newNoteNode.remove();
         updateCounter();
       };
 
-      const todo = newNote.querySelector("#todo") as HTMLElement;
-      const checkBox = newNote.querySelector("#boxcheck")! as HTMLInputElement;      
+      const todo = newNoteNode.querySelector("#todo") as HTMLElement;
+      const checkBox = newNoteNode.querySelector("#boxcheck")! as HTMLInputElement;      
       if (note.done) {
         checkBox.checked = true;
         todo.style.textDecoration = 'line-through';
@@ -167,7 +168,7 @@ function createNote(note: Note) {
       }     
       checkBox.onclick = (event) => {
         let setDoneUndone = notes.findIndex(
-          (i) => i.id == note.id
+          (i) => i.id === note.id
         );
         if (checkBox.checked === true) {
           notes[setDoneUndone].done = true;
@@ -186,9 +187,9 @@ function createNote(note: Note) {
       // Event listener removed to prevent conflicts between it and "onsubmit". Gets re-added when user edits a note.
       editTextBox.removeEventListener("blur", overwriteNote);
   
-      noteNode.replaceChildren(newNote);
+      noteNode.replaceChildren(newNoteNode);
       let parentDiv = noteNode.querySelector('.parent') as HTMLElement;
-      parentDiv.style.width = '100%'
+      parentDiv.style.width = '100%';
       noteNode.addEventListener("dblclick", editNote);
   
       updateCounter();
@@ -203,12 +204,12 @@ function trueCheckBoxes() {
   );  
   let completed = 0;
   notes.forEach((element) => {
-    if (element.done == true) {
+    if (element.done === true) {
       completed++;
     }
   });
 
-  if (completed == notes.length) {
+  if (completed === notes.length) {
     checkedBox.forEach((checkbox) => {
       checkbox.checked = false;      
     });
@@ -236,7 +237,7 @@ function trueCheckBoxes() {
   updateCounter();
 }
 
-// "clicked" class is added and removed in these functions so that the active tab can be highlighted in css. This to avoid loosing the border on buttons when refreshing the page 
+// "clicked" class is added and removed in these functions. This is to avoid loosing the border on active tab button when refreshing the page 
 const showAllNotesButton = document.getElementById('show-all') as HTMLButtonElement;
 showAllNotesButton.addEventListener('click', showAllNotes);
 function showAllNotes() {
@@ -259,7 +260,7 @@ function showActiveNotes() {
   window.location.hash = "active";
   notes.forEach((element) => {
     let div = document.getElementById(element.id.toString()) as HTMLElement;
-    if (element.done == true) {
+    if (element.done === true) {
       div.style.display = 'none';
     }
     else {
@@ -277,7 +278,7 @@ function showCompletedNotes() {
   window.location.hash = "completed";
   notes.forEach((element) => {
     let div = document.getElementById(element.id.toString()) as HTMLElement;
-    if (element.done == true) {
+    if (element.done === true) {
       div.style.display = 'flex';
     }
     else {
@@ -346,7 +347,7 @@ function updateCounter() {
     if (count === 1) {
       counter.textContent = "1 item left";
     }
-    else if (count == notes.length) {
+    else if (count === notes.length) {
       counter.textContent = count + " items left";
       clearCompletedButton.style.visibility = "hidden";
     }

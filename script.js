@@ -27,7 +27,7 @@ function loadLocalStorage() {
             var textEnd = sortingList[i].lastIndexOf('$');
             noteText = sortingList[i].substring(textStart + 1, textEnd);
             var noteDone = false;
-            if (sortingList[i].substring(textEnd + 1) == "true") {
+            if (sortingList[i].substring(textEnd + 1) === "true") {
                 noteDone = true;
             }
             var noteObject = new Note();
@@ -78,7 +78,7 @@ function createNote(note) {
     var checkBox = noteNode.querySelector("#boxcheck");
     var todo = noteNode.querySelector("#todo");
     // This check is for when objects are passed in from loadLocalStorage()
-    if (note.done == true) {
+    if (note.done === true) {
         checkBox.checked = true;
         todo.style.textDecoration = 'line-through';
         todo.style.opacity = '0.5';
@@ -102,6 +102,7 @@ function createNote(note) {
     function editNote() {
         // Remove event listener to prevent crash if double clicked again. Added back at the end of function.
         noteNode.removeEventListener("dblclick", editNote);
+        // Creates a textbox. Extra div and attributes added to get CSS settings included
         var editForm = document.createElement("form");
         editForm.setAttribute("class", "parent");
         var div = document.createElement("div");
@@ -118,28 +119,28 @@ function createNote(note) {
         editForm.addEventListener("submit", overwriteNote);
         editTextBox.addEventListener("blur", overwriteNote);
         function overwriteNote() {
-            var newNote = noteTemplate.content.firstElementChild.cloneNode(true);
-            newNote.querySelector("#todo").textContent = editTextBox.value;
-            newNote.setAttribute("id", note.id.toString());
+            var newNoteNode = noteTemplate.content.firstElementChild.cloneNode(true);
+            newNoteNode.querySelector("#todo").textContent = editTextBox.value;
+            newNoteNode.setAttribute("id", note.id.toString());
             var noteToEdit = notes.findIndex(function (i) { return i.id == note.id; });
             notes[noteToEdit].text = editTextBox.value;
             // Some duplicate code for controls in here, looping back to createNote makes notes "jump around"
-            var deleteButton = newNote.querySelector("button");
+            var deleteButton = newNoteNode.querySelector("button");
             deleteButton.onclick = function (event) {
                 var toRemove = notes.findIndex(function (i) { return i.id == note.id; });
                 notes.splice(toRemove, 1);
-                newNote.remove();
+                newNoteNode.remove();
                 updateCounter();
             };
-            var todo = newNote.querySelector("#todo");
-            var checkBox = newNote.querySelector("#boxcheck");
+            var todo = newNoteNode.querySelector("#todo");
+            var checkBox = newNoteNode.querySelector("#boxcheck");
             if (note.done) {
                 checkBox.checked = true;
                 todo.style.textDecoration = 'line-through';
                 todo.style.opacity = '0.5';
             }
             checkBox.onclick = function (event) {
-                var setDoneUndone = notes.findIndex(function (i) { return i.id == note.id; });
+                var setDoneUndone = notes.findIndex(function (i) { return i.id === note.id; });
                 if (checkBox.checked === true) {
                     notes[setDoneUndone].done = true;
                     todo.style.textDecoration = 'line-through';
@@ -155,7 +156,7 @@ function createNote(note) {
             };
             // Event listener removed to prevent conflicts between it and "onsubmit". Gets re-added when user edits a note.
             editTextBox.removeEventListener("blur", overwriteNote);
-            noteNode.replaceChildren(newNote);
+            noteNode.replaceChildren(newNoteNode);
             var parentDiv = noteNode.querySelector('.parent');
             parentDiv.style.width = '100%';
             noteNode.addEventListener("dblclick", editNote);
@@ -168,11 +169,11 @@ function trueCheckBoxes() {
     var checkedBox = document.querySelectorAll("input[type=checkbox]");
     var completed = 0;
     notes.forEach(function (element) {
-        if (element.done == true) {
+        if (element.done === true) {
             completed++;
         }
     });
-    if (completed == notes.length) {
+    if (completed === notes.length) {
         checkedBox.forEach(function (checkbox) {
             checkbox.checked = false;
         });
@@ -199,7 +200,7 @@ function trueCheckBoxes() {
     checkHash();
     updateCounter();
 }
-// "clicked" class is added and removed in these functions so that the active tab can be highlighted in css. This to avoid loosing the border on buttons when refreshing the page 
+// "clicked" class is added and removed in these functions. This is to avoid loosing the border on active tab button when refreshing the page 
 var showAllNotesButton = document.getElementById('show-all');
 showAllNotesButton.addEventListener('click', showAllNotes);
 function showAllNotes() {
@@ -221,7 +222,7 @@ function showActiveNotes() {
     window.location.hash = "active";
     notes.forEach(function (element) {
         var div = document.getElementById(element.id.toString());
-        if (element.done == true) {
+        if (element.done === true) {
             div.style.display = 'none';
         }
         else {
@@ -238,7 +239,7 @@ function showCompletedNotes() {
     window.location.hash = "completed";
     notes.forEach(function (element) {
         var div = document.getElementById(element.id.toString());
-        if (element.done == true) {
+        if (element.done === true) {
             div.style.display = 'flex';
         }
         else {
@@ -302,7 +303,7 @@ function updateCounter() {
         if (count === 1) {
             counter.textContent = "1 item left";
         }
-        else if (count == notes.length) {
+        else if (count === notes.length) {
             counter.textContent = count + " items left";
             clearCompletedButton.style.visibility = "hidden";
         }
