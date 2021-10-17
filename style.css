@@ -165,19 +165,16 @@ footer {
 footer span {
     margin-left: 10px;
     padding: 4px;
-    min-width: 80px;
-    width: 85px;
+    min-width: 95px;
 }
 
 .filters {
-    margin-left: 5rem;
-    position: relative;
+    margin-left: 4rem;
 }
 
 footer button {
     margin-left: 1rem;
     background-color: white;
-    border: none;
     padding: 3px;
     color: #777;
     /* Empty border to avoid movement on hover */
@@ -199,7 +196,6 @@ footer button:hover {
     margin-left: 53px;
     visibility: hidden;
     padding: 4px;
-    min-width: 80px;
     font-size: 13px;
     border: none;
 }
@@ -235,41 +231,38 @@ footer button:hover {
     }
     .parent {
         width: 356px;
-    }
-
-    .searchbar::placeholder {
-        content: "hej";
-    }
+    }    
 
     footer {
         justify-content: center;
         align-items: center;
-        width: 356px;
     }
     
     /* " items left " */
     footer span {
         text-align: center;
-        margin-left: 0px;
+        margin-left: 10px;
         padding: 0px;
-        min-width: 25px;
-        width: 0px;
+        min-width: 35px;
     }
     
     /* All, Active, Completed */
     .filters {
-        display: flex;
-        flex-direction: column;
+        text-align: center;
     }
         
     #clearallcompleted {
         margin-right: 0px;
         padding: 0px;
-        max-width: 80px;
+        min-width: 80px;
     }
     
     #clearallcompleted:hover {
         text-decoration: underline;
         cursor: pointer;
+    }
+
+    #remove-list-item {
+        inset: 0 0 0 320px;
     }
 }
